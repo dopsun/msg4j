@@ -1,2 +1,2 @@
-# msg4j
-Message for Java: codec, store and deliver
+# msg4j: Message for Java
+Codec, store and deliver, and more ...
