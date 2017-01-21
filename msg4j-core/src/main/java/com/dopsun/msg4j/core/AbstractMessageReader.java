@@ -16,6 +16,7 @@
 
 package com.dopsun.msg4j.core;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,6 +43,56 @@ abstract class AbstractMessageReader implements MessageReader {
      */
     final Map<String, Field> fields() {
         return fields;
+    }
+
+    @Override
+    public void accept(MessageVisitor visitor) {
+        Objects.requireNonNull(visitor);
+
+        for (Map.Entry<String, Field> entry : fields.entrySet()) {
+            Field field = entry.getValue();
+
+            switch (field.type()) {
+            case Byte:
+                visitor.visit(entry.getKey(), field.type(), ((Field.ByteField) field).value());
+                break;
+            case Char:
+                visitor.visit(entry.getKey(), field.type(), ((Field.CharField) field).value());
+                break;
+            case Short:
+                visitor.visit(entry.getKey(), field.type(), ((Field.ShortField) field).value());
+                break;
+            case Int:
+                visitor.visit(entry.getKey(), field.type(), ((Field.IntField) field).value());
+                break;
+            case Long:
+                visitor.visit(entry.getKey(), field.type(), ((Field.LongField) field).value());
+                break;
+            case Float:
+                visitor.visit(entry.getKey(), field.type(), ((Field.FloatField) field).value());
+                break;
+            case Double:
+                visitor.visit(entry.getKey(), field.type(), ((Field.DoubleField) field).value());
+                break;
+            case String:
+                visitor.visit(entry.getKey(), field.type(), ((Field.StringField) field).value());
+                break;
+            case Message:
+                visitor.visit(entry.getKey(), field.type(), ((Field.MessageField) field).value());
+                break;
+            case MessageList:
+                visitor.visit(entry.getKey(), field.type(),
+                        ((Field.MessageListField) field).value());
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    @Override
+    public Collection<String> fieldNames() {
+        return fields.keySet();
     }
 
     @Override

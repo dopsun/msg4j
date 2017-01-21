@@ -16,6 +16,7 @@
 
 package com.dopsun.msg4j.core;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,9 +32,19 @@ import java.util.OptionalLong;
  */
 public interface MessageReader {
     /**
+     * @param visitor
+     */
+    void accept(MessageVisitor visitor);
+
+    /**
      * @return number of field
      */
     int size();
+
+    /**
+     * @return all field names in this message.
+     */
+    Collection<String> fieldNames();
 
     /**
      * @param fieldName
