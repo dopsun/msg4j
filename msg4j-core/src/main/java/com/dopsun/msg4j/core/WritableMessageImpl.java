@@ -98,7 +98,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
     }
 
     @Override
-    public void putLong(String fieldName, int value) throws InvalidTypeException {
+    public void putLong(String fieldName, long value) throws InvalidTypeException {
         Objects.requireNonNull(fieldName);
 
         Field field = fields().get(fieldName);

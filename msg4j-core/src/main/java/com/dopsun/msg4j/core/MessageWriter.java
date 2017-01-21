@@ -97,7 +97,7 @@ public interface MessageWriter {
      * @throws InvalidTypeException
      *             if field exists but not expected type.
      */
-    void putLong(String fieldName, int value) throws InvalidTypeException;
+    void putLong(String fieldName, long value) throws InvalidTypeException;
 
     /**
      * Puts value to field specified by <code>fieldName</code>.
