@@ -20,3 +20,6 @@ target/
 
 # MacOS
 .DS_Store
+
+# ActiveMQ testing data folder
+activemq-data/
