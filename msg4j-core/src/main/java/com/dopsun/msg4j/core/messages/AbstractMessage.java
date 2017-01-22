@@ -14,64 +14,21 @@
  * limitations under the License.
  */
 
-package com.dopsun.msg4j.core;
+package com.dopsun.msg4j.core.messages;
 
-import java.util.List;
+import java.util.Map;
 
 /**
- * Type of field.
+ * Base class for message.
  * 
  * @author Dop Sun
  * @since 1.0.0
  */
-public enum FieldType {
+abstract class AbstractMessage extends AbstractMessageReader implements Message {
     /**
-     * @see Byte
+     * @param fields
      */
-    Byte,
-
-    /**
-     * @see Character
-     */
-    Char,
-
-    /**
-     * @see Short
-     */
-    Short,
-
-    /**
-     * @see Integer
-     */
-    Int,
-
-    /**
-     * @see Long
-     */
-    Long,
-
-    /**
-     * @see Float
-     */
-    Float,
-
-    /**
-     * @see Double
-     */
-    Double,
-
-    /**
-     * @see String
-     */
-    String,
-
-    /**
-     * @see Message
-     */
-    Message,
-
-    /**
-     * @see List
-     */
-    MessageList
+    protected AbstractMessage(Map<String, Field> fields) {
+        super(fields);
+    }
 }

@@ -14,5 +14,19 @@
  * limitations under the License.
  */
 
-@javax.annotation.ParametersAreNonnullByDefault
-package com.dopsun.msg4j.core;
+package com.dopsun.msg4j.core.messages;
+
+/**
+ * Factory methods.
+ * 
+ * @author Dop Sun
+ * @since 1.0.0
+ */
+public final class Messages {
+    /**
+     * @return a writable message
+     */
+    public static final WritableMessage create() {
+        return new WritableMessageImpl();
+    }
+}

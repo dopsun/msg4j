@@ -27,12 +27,12 @@ import javax.annotation.Nonnull;
 import javax.jms.JMSException;
 import javax.jms.Session;
 
-import com.dopsun.msg4j.core.FieldType;
-import com.dopsun.msg4j.core.ImmutableMessage;
-import com.dopsun.msg4j.core.MessageReader;
-import com.dopsun.msg4j.core.MessageVisitor;
-import com.dopsun.msg4j.core.Messages;
-import com.dopsun.msg4j.core.WritableMessage;
+import com.dopsun.msg4j.core.messages.FieldType;
+import com.dopsun.msg4j.core.messages.ImmutableMessage;
+import com.dopsun.msg4j.core.messages.MessageReader;
+import com.dopsun.msg4j.core.messages.MessageVisitor;
+import com.dopsun.msg4j.core.messages.Messages;
+import com.dopsun.msg4j.core.messages.WritableMessage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMap;

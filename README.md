@@ -3,10 +3,10 @@ Define, codec, store and deliver, and more ...
 
 ## Goals
 * Message, a map with key type as string
-  * [MessageReader](msg4j-core/src/main/java/com/dopsun/msg4j/core/MessageReader.java) 
-  * [MessageWriter](msg4j-core/src/main/java/com/dopsun/msg4j/core/MessageWriter.java)
-  * [ImmutableMessage](msg4j-core/src/main/java/com/dopsun/msg4j/core/ImmutableMessage.java)
-  * [WritableMessage](msg4j-core/src/main/java/com/dopsun/msg4j/core/WritableMessage.java)
+  * [MessageReader](msg4j-core/src/main/java/com/dopsun/msg4j/core/messages/MessageReader.java) 
+  * [MessageWriter](msg4j-core/src/main/java/com/dopsun/msg4j/core/messages/MessageWriter.java)
+  * [ImmutableMessage](msg4j-core/src/main/java/com/dopsun/msg4j/core/messages/ImmutableMessage.java)
+  * [WritableMessage](msg4j-core/src/main/java/com/dopsun/msg4j/core/messages/WritableMessage.java)
 * Transport, an abstract of underlying message delivery infrastructure
 
 ## Non Goals

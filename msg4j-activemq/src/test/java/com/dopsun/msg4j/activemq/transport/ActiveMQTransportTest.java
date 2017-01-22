@@ -24,12 +24,12 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.dopsun.msg4j.core.Message;
-import com.dopsun.msg4j.core.Messages;
-import com.dopsun.msg4j.core.WritableMessage;
 import com.dopsun.msg4j.core.delivery.transports.TransportSubscriberSettings;
 import com.dopsun.msg4j.core.delivery.transports.TransportSubscription;
 import com.dopsun.msg4j.core.delivery.transports.TransportTopic;
+import com.dopsun.msg4j.core.messages.Message;
+import com.dopsun.msg4j.core.messages.Messages;
+import com.dopsun.msg4j.core.messages.WritableMessage;
 import com.google.common.collect.Lists;
 
 /**

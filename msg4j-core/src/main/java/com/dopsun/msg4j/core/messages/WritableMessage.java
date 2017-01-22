@@ -14,34 +14,20 @@
  * limitations under the License.
  */
 
-package com.dopsun.msg4j.core;
-
-import java.util.Objects;
+package com.dopsun.msg4j.core.messages;
 
 /**
- * Field with specified name not found.
- * 
  * @author Dop Sun
  * @since 1.0.0
  */
-public class FieldNotFoundException extends RuntimeException {
-    private static final long serialVersionUID = -5065097779058583582L;
-
-    private final String fieldName;
-
+public interface WritableMessage extends Message, MessageWriter {
     /**
-     * @param fieldName
+     * @return immutable message with same content.
      */
-    public FieldNotFoundException(String fieldName) {
-        super("Field not exist: " + Objects.requireNonNull(fieldName));
+    ImmutableMessage toImmutable();
 
-        this.fieldName = fieldName;
-    }
-
-    /**
-     * @return
-     */
-    public String getFieldName() {
-        return fieldName;
+    @Override
+    default boolean isImmutable() {
+        return false;
     }
 }

@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import com.dopsun.msg4j.core.Message;
+import com.dopsun.msg4j.core.messages.Message;
 
 /**
  * @author Dop Sun

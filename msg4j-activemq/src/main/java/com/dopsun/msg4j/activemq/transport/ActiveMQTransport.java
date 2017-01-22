@@ -33,8 +33,6 @@ import org.apache.activemq.ActiveMQSession;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 
-import com.dopsun.msg4j.core.ImmutableMessage;
-import com.dopsun.msg4j.core.Message;
 import com.dopsun.msg4j.core.delivery.transports.Transport;
 import com.dopsun.msg4j.core.delivery.transports.TransportCapability;
 import com.dopsun.msg4j.core.delivery.transports.TransportDestination;
@@ -44,6 +42,8 @@ import com.dopsun.msg4j.core.delivery.transports.TransportException;
 import com.dopsun.msg4j.core.delivery.transports.TransportSubscriberSettings;
 import com.dopsun.msg4j.core.delivery.transports.TransportSubscription;
 import com.dopsun.msg4j.core.delivery.transports.TransportTopic;
+import com.dopsun.msg4j.core.messages.ImmutableMessage;
+import com.dopsun.msg4j.core.messages.Message;
 import com.google.common.collect.ImmutableList;
 
 /**

@@ -14,19 +14,34 @@
  * limitations under the License.
  */
 
-package com.dopsun.msg4j.core;
+package com.dopsun.msg4j.core.messages;
+
+import java.util.Objects;
 
 /**
- * Factory methods.
+ * Field with specified name not found.
  * 
  * @author Dop Sun
  * @since 1.0.0
  */
-public final class Messages {
+public class FieldNotFoundException extends RuntimeException {
+    private static final long serialVersionUID = -5065097779058583582L;
+
+    private final String fieldName;
+
     /**
-     * @return a writable message
+     * @param fieldName
      */
-    public static final WritableMessage create() {
-        return new WritableMessageImpl();
+    public FieldNotFoundException(String fieldName) {
+        super("Field not exist: " + Objects.requireNonNull(fieldName));
+
+        this.fieldName = fieldName;
+    }
+
+    /**
+     * @return
+     */
+    public String getFieldName() {
+        return fieldName;
     }
 }

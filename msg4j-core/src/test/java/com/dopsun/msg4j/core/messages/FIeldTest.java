@@ -2,9 +2,12 @@
  * Copyright (c) 2017 Dop Sun. All rights reserved.
  */
 
-package com.dopsun.msg4j.core;
+package com.dopsun.msg4j.core.messages;
 
 import org.junit.Test;
+
+import com.dopsun.msg4j.core.messages.Field;
+import com.dopsun.msg4j.core.messages.FieldType;
 
 /**
  * @author Dop Sun

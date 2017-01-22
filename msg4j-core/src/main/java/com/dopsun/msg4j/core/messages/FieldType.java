@@ -14,25 +14,64 @@
  * limitations under the License.
  */
 
-package com.dopsun.msg4j.core;
+package com.dopsun.msg4j.core.messages;
 
-import javax.annotation.concurrent.ThreadSafe;
+import java.util.List;
 
 /**
- * Immutable message.
+ * Type of field.
  * 
  * @author Dop Sun
  * @since 1.0.0
  */
-@ThreadSafe
-public interface ImmutableMessage extends Message {
+public enum FieldType {
     /**
-     * @return writable message with same content.
+     * @see Byte
      */
-    WritableMessage toWritable();
+    Byte,
 
-    @Override
-    default boolean isImmutable() {
-        return true;
-    }
+    /**
+     * @see Character
+     */
+    Char,
+
+    /**
+     * @see Short
+     */
+    Short,
+
+    /**
+     * @see Integer
+     */
+    Int,
+
+    /**
+     * @see Long
+     */
+    Long,
+
+    /**
+     * @see Float
+     */
+    Float,
+
+    /**
+     * @see Double
+     */
+    Double,
+
+    /**
+     * @see String
+     */
+    String,
+
+    /**
+     * @see Message
+     */
+    Message,
+
+    /**
+     * @see List
+     */
+    MessageList
 }

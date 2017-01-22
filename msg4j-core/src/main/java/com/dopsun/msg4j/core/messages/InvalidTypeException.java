@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package com.dopsun.msg4j.core;
+package com.dopsun.msg4j.core.messages;
+
+import javax.annotation.Nonnull;
 
 /**
+ * Field type is not expected.
+ * 
  * @author Dop Sun
  * @since 1.0.0
  */
-public interface WritableMessage extends Message, MessageWriter {
-    /**
-     * @return immutable message with same content.
-     */
-    ImmutableMessage toImmutable();
+public class InvalidTypeException extends RuntimeException {
+    private static final long serialVersionUID = -4497190672087372492L;
 
-    @Override
-    default boolean isImmutable() {
-        return false;
+    /**
+     * @param fieldName
+     * @param expected
+     * @param actual
+     */
+    public InvalidTypeException(@Nonnull String fieldName, FieldType expected, FieldType actual) {
+        super("Field type mismatch: name=" + fieldName + ", expected=" + expected + ", actual="
+                + actual);
     }
 }

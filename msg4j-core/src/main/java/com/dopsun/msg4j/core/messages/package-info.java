@@ -14,26 +14,5 @@
  * limitations under the License.
  */
 
-package com.dopsun.msg4j.core;
-
-import javax.annotation.Nonnull;
-
-/**
- * Field type is not expected.
- * 
- * @author Dop Sun
- * @since 1.0.0
- */
-public class InvalidTypeException extends RuntimeException {
-    private static final long serialVersionUID = -4497190672087372492L;
-
-    /**
-     * @param fieldName
-     * @param expected
-     * @param actual
-     */
-    public InvalidTypeException(@Nonnull String fieldName, FieldType expected, FieldType actual) {
-        super("Field type mismatch: name=" + fieldName + ", expected=" + expected + ", actual="
-                + actual);
-    }
-}
+@javax.annotation.ParametersAreNonnullByDefault
+package com.dopsun.msg4j.core.messages;

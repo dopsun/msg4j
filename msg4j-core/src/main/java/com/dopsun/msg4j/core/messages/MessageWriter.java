@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.dopsun.msg4j.core;
+package com.dopsun.msg4j.core.messages;
 
 import java.util.List;
 

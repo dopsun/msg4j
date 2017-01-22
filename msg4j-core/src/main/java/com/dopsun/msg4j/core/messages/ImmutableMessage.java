@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package com.dopsun.msg4j.core;
+package com.dopsun.msg4j.core.messages;
 
-import java.util.Map;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * Base class for message.
+ * Immutable message.
  * 
  * @author Dop Sun
  * @since 1.0.0
  */
-abstract class AbstractMessage extends AbstractMessageReader implements Message {
+@ThreadSafe
+public interface ImmutableMessage extends Message {
     /**
-     * @param fields
+     * @return writable message with same content.
      */
-    protected AbstractMessage(Map<String, Field> fields) {
-        super(fields);
+    WritableMessage toWritable();
+
+    @Override
+    default boolean isImmutable() {
+        return true;
     }
 }
