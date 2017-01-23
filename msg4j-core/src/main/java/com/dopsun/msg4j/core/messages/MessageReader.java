@@ -503,6 +503,28 @@ public interface MessageReader {
             throws FieldNotFoundException, InvalidTypeException;
 
     /**
+     * @param fieldName
+     *            field name
+     * @param defaultValue
+     *            value returned if field not exist
+     * @return value of field if exist, otherwise <code>defaultValue</code>.
+     * 
+     * @throws InvalidTypeException
+     *             if field exists but not expected type.
+     */
+    default List<ImmutableMessage> tryGetMessageList(String fieldName,
+            List<ImmutableMessage> defaultValue) throws InvalidTypeException {
+        Objects.requireNonNull(fieldName);
+        Objects.requireNonNull(defaultValue);
+
+        if (contains(fieldName)) {
+            return getMessageList(fieldName);
+        }
+
+        return defaultValue;
+    }
+
+    /**
      * Tries get the value if present.
      * 
      * @param fieldName

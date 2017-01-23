@@ -29,6 +29,7 @@
 	<modules>
 		<module>msg4j-core</module>
 		<module>msg4j-activemq</module>
+		<module>msg4j-tools</module>
 	</modules>
 
 	<dependencies>

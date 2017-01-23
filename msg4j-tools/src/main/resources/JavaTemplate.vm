@@ -1,0 +1,179 @@
+/*
+ * Copyright (c) 2017 Dop Sun. All rights reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package ${package};
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
+import java.util.OptionalDouble;
+
+import javax.annotation.Generated;
+
+import com.dopsun.msg4j.core.messages.ImmutableMessage;
+import com.dopsun.msg4j.core.messages.MessageReader;
+import com.dopsun.msg4j.core.messages.WritableMessage;
+import com.dopsun.msg4j.core.messages.schema.DataDictionary;
+import com.dopsun.msg4j.core.messages.schema.ByteFieldInfo;
+import com.dopsun.msg4j.core.messages.schema.CharFieldInfo;
+import com.dopsun.msg4j.core.messages.schema.ShortFieldInfo;
+import com.dopsun.msg4j.core.messages.schema.IntFieldInfo;
+import com.dopsun.msg4j.core.messages.schema.LongFieldInfo;
+import com.dopsun.msg4j.core.messages.schema.FloatFieldInfo;
+import com.dopsun.msg4j.core.messages.schema.DoubleFieldInfo;
+import com.dopsun.msg4j.core.messages.schema.StringFieldInfo;
+import com.dopsun.msg4j.core.messages.schema.MessageFieldInfo;
+import com.dopsun.msg4j.core.messages.schema.MessageListFieldInfo;
+
+/**
+ * @author Dop Sun
+ * @since 1.0.0
+ */
+@Generated("msg4j-tools")
+@SuppressWarnings({ "javadoc", "unused" })
+public final class ${containerClassName} {
+#foreach ($message in $model.finalMessages)
+    public static final Messages.${message.name}Reader read${message.name}(MessageReader message) {
+        return new Messages.${message.name}Reader(message);
+    }
+
+    public static final Messages.${message.name}Writer write${message.name}(WritableMessage message) {
+        return new Messages.${message.name}Writer(message);
+    }
+
+    public static final Messages.${message.name}Writer new${message.name}() {
+        WritableMessage message = com.dopsun.msg4j.core.messages.Messages.create();
+        Fields.${model.messageTypeField.name}.put(message, Messages.${generator.nameToConst($message.name)});
+        
+        return new Messages.${message.name}Writer(message);
+    }
+
+#end
+
+    /** @formatter:off */
+    public static final DataDictionary DICTIONARY = DataDictionary.builder()
+#foreach ($field in $model.fields)
+            .addField(Fields.$field.name)
+#end
+            .build();
+    /** @formatter:on */
+
+    public static class Fields {
+#foreach ($field in $model.fields)
+        public static final String ${generator.nameToConst($field.name)} = "${field.id}";
+#end
+
+#foreach ($field in $model.fields)
+        public static final ${generator.getFieldInfoString($field)} $field.name = new ${generator.getFieldInfoString($field)}(${generator.nameToConst($field.name)});
+#end
+    }
+
+    public static class Messages {
+#foreach ($message in $model.finalMessages)
+        public static final String ${generator.nameToConst($message.name)} = "${message.id}";
+#end
+
+        public static abstract class AbstractReader {
+            protected final MessageReader message;
+
+            protected AbstractReader(MessageReader message) {
+                Objects.requireNonNull(message);
+
+                this.message = message;
+            }
+
+            /**
+             * @return the message
+             */
+            public MessageReader getMessage() {
+                return message;
+            }
+        }
+
+        public static abstract class AbstractWriter {
+            protected final WritableMessage message;
+
+            protected AbstractWriter(WritableMessage message) {
+                Objects.requireNonNull(message);
+
+                this.message = message;
+            }
+
+            /**
+             * @return the message
+             */
+            public WritableMessage getMessage() {
+                return message;
+            }
+        }
+        
+#foreach ($message in $model.finalMessages)
+        public static final class ${message.name}Reader extends AbstractReader {
+            public ${message.name}Reader(MessageReader message) {
+                super(message);
+            }
+            
+#foreach ($field in $message.requiredFields)
+            public final ${generator.getFieldValueTypeString($field, false)} get${field.name}() {
+                return Fields.${field.name}.get(message);
+            }
+
+#end
+#foreach ($field in $message.optionalFields)
+            public final ${generator.getFieldValueTypeString($field, false)} get${field.name}() {
+                return Fields.${field.name}.get(message);
+            }
+
+            public final ${generator.getFieldValueTypeString($field, false)} tryGet${field.name}(${generator.getFieldValueTypeString($field, false)} defaultValue) {
+                return Fields.${field.name}.tryGet(message, defaultValue);
+            }
+
+#if (${generator.canFieldValueOptional($field)})
+            public final ${generator.getFieldValueTypeString($field, true)} tryGet${field.name}() {
+                return Fields.${field.name}.tryGet(message);
+            }
+    
+#end
+#end
+        }
+
+        public static final class ${message.name}Writer extends AbstractWriter {
+            public ${message.name}Writer(WritableMessage message) {
+                super(message);
+            }
+            
+#foreach ($field in $message.requiredFields)
+#if (!${model.isMessageTypeField($field)})
+            public final void set${field.name}(${generator.getFieldValueTypeString($field, false)} value) {
+                Fields.${field.name}.put(message, value);
+            }
+
+#end
+#end
+#foreach ($field in $message.optionalFields)
+#if (!${model.isMessageTypeField($field)})
+            public final void set${field.name}(${generator.getFieldValueTypeString($field, false)} value) {
+                Fields.${field.name}.put(message, value);
+            }
+
+#end
+#end
+        }
+
+#end
+    }
+}
