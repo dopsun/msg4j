@@ -73,12 +73,12 @@ public class ActiveMQTransportTest {
             TransportTopic topic = transport.createTopic("TEST", false);
             TransportSubscriberSettings settings = TransportSubscriberSettings.create();
 
-            TransportSubscription subscription = transport.subscribe(topic, (m) -> {
+            TransportSubscription subscription = transport.subscribe(topic, settings, (m) -> {
                 synchronized (list) {
                     list.add(m);
                     list.notifyAll();
                 }
-            }, settings);
+            });
 
             try {
                 WritableMessage msg = Messages.create();
