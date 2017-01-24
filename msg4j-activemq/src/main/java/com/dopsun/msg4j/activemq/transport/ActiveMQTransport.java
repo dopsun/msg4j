@@ -255,14 +255,14 @@ public class ActiveMQTransport implements Transport {
 
     @Override
     public TransportSubscription subscribe(TransportDestination destination,
-            Consumer<Message> consumer, TransportSubscriberSettings settings)
+            TransportSubscriberSettings settings, Consumer<Message> consumer)
             throws TransportException {
         Objects.requireNonNull(destination);
         if (!(destination instanceof ActiveMQTransportDestination)) {
             throw new IllegalArgumentException();
         }
-        Objects.requireNonNull(consumer);
         Objects.requireNonNull(settings);
+        Objects.requireNonNull(consumer);
 
         if (settings.isBrowsingOnly()) {
             throw new UnsupportedOperationException("Browsing is not supported.");

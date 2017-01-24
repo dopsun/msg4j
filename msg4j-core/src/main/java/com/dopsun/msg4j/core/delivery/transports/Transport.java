@@ -106,9 +106,9 @@ public interface Transport extends AutoCloseable {
      * 
      * @param destination
      *            destination where message to enqueue
+     * @param settings
      * @param consumer
      *            consumer to get data.
-     * @param settings
      * @return subscription
      * 
      * @throws TransportException
@@ -116,8 +116,8 @@ public interface Transport extends AutoCloseable {
      * @throws UnsupportedOperationException
      *             if type of subscription is not supported.
      */
-    TransportSubscription subscribe(TransportDestination destination, Consumer<Message> consumer,
-            TransportSubscriberSettings settings)
+    TransportSubscription subscribe(TransportDestination destination,
+            TransportSubscriberSettings settings, Consumer<Message> consumer)
             throws TransportException, UnsupportedOperationException;
 
     /**
