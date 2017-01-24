@@ -24,6 +24,9 @@ import javax.annotation.concurrent.ThreadSafe;
 import com.dopsun.msg4j.core.messages.Message;
 
 /**
+ * A transport for message delivery. This is an API abstraction of underlying messaging delivery
+ * service.
+ * 
  * @author Dop Sun
  * @since 1.0.0
  */
@@ -43,7 +46,7 @@ public interface Transport extends AutoCloseable {
     void addEventListener(TransportEventListener listener) throws TransportException;
 
     /**
-     * Removes first occurence of <code>listener</code>.
+     * Removes first occurrence of <code>listener</code>.
      * 
      * @param listener
      *            listener to transport event
@@ -55,44 +58,55 @@ public interface Transport extends AutoCloseable {
     /**
      * Creates the queue for <code>subject</code>.
      * 
+     * <p>
+     * Calling this function will not provision queue within underlying messaging service provider.
+     * </p>
+     * 
      * @param subject
      *            subject for the queue.
-     * @param lastValueQueue
-     *            <code>true</code> if requesting to create last value queue.
+     * @param producerMode
+     *            producer mode
+     * @param consumerMode
+     *            consumer mode
      * @return transport queue object.
      * 
      * @throws TransportException
      *             transport exception, e.g. transport has closed.
      * @throws UnsupportedOperationException
-     *             if <code>lastValueQueue</code> is <code>false</code>,
-     *             {@link TransportCapability#Guaranteed} not supported, or
-     *             <code>lastValueQueue</code> is <code>true</code> and
-     *             {@link TransportCapability#LastValue} is not supported.
+     *             if <code>producerMode</code> or <code>consumerMode</code> is not supported.
      */
-    TransportQueue createQueue(String subject, boolean lastValueQueue)
+    TransportQueue createQueue(String subject, ProducerMode producerMode, ConsumerMode consumerMode)
             throws TransportException, UnsupportedOperationException;
 
     /**
-     * Creates the queue for <code>subject</code>.
+     * Creates the topic for <code>subject</code>.
+     * 
+     * <p>
+     * Calling this function will not provision topic within underlying messaging service provider.
+     * </p>
      * 
      * @param subject
-     *            subject for the queue.
-     * @param durable
-     *            <code>true</code> if topic is durable, and messages are sent and persisted.
-     * @param lastValueQueue
-     *            <code>true</code> if requesting to create last value queue.
+     *            subject for the topic.
+     * @param producerMode
+     *            producer mode
+     * @param consumerMode
+     *            consumer mode
      * @return transport queue object.
      * 
      * @throws TransportException
      *             transport exception, e.g. transport has closed.
+     * @throws UnsupportedOperationException
+     *             if <code>producerMode</code> or <code>consumerMode</code> is not supported.
      */
-    TransportTopic createTopic(String subject, boolean durable) throws TransportException;
+    TransportTopic createTopic(String subject, ProducerMode producerMode, ConsumerMode consumerMode)
+            throws TransportException, UnsupportedOperationException;
 
     /**
-     * Publishes message with direct.
+     * Publishes message to destination.
      * 
      * @param destination
-     *            destination where message to publish
+     *            destination where message to publish, {@link TransportQueue queue} or
+     *            {@link TransportTopic topic}.
      * @param message
      *            message to deliver
      * 
@@ -102,13 +116,14 @@ public interface Transport extends AutoCloseable {
     void publish(TransportDestination destination, Message message) throws TransportException;
 
     /**
-     * Consumers message from the transport.
+     * Subscribes message from the transport. Messages will be delivered to <code>consumer</code>.
      * 
      * @param destination
-     *            destination where message to enqueue
+     *            destination to subscribe
      * @param settings
+     *            settings for subscription.
      * @param consumer
-     *            consumer to get data.
+     *            messages delivered to this consumer.
      * @return subscription
      * 
      * @throws TransportException

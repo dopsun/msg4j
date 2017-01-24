@@ -33,24 +33,42 @@ public final class TransportSubscriberSettings {
     }
 
     private boolean browsingOnly;
-    private String durableSubscriberName;
+
+    private boolean durable;
+
+    @Nullable
+    private String name;
+
+    @Nullable
     private String selector;
 
     TransportSubscriberSettings() {
     }
 
     /**
-     * For browsing the data only. This requires {@link Transport#capabilities()} to include
+     * This requires {@link Transport#capabilities()} to include
      * {@link TransportCapability#DurableSubscriber}.
      * 
-     * @param subscriberName
+     * @param name
      *            durable subscriber name
      * @return this settings
      */
-    public TransportSubscriberSettings durable(String subscriberName) {
-        Objects.requireNonNull(subscriberName);
+    public TransportSubscriberSettings name(String name) {
+        Objects.requireNonNull(name);
 
-        this.durableSubscriberName = subscriberName;
+        this.name = name;
+        return this;
+    }
+
+    /**
+     * This requires {@link Transport#capabilities()} to include
+     * {@link TransportCapability#DurableSubscriber}.
+     * 
+     * @return this settings
+     */
+    public TransportSubscriberSettings durable() {
+        this.durable = true;
+
         return this;
     }
 
@@ -91,15 +109,15 @@ public final class TransportSubscriberSettings {
      * @return <code>true</code> if this is for durable subscriber.
      */
     public boolean isDurable() {
-        return durableSubscriberName != null;
+        return durable;
     }
 
     /**
      * @return the durable subscriber name. Not <code>null</code> if this is for durable subscriber.
      */
     @Nullable
-    public String getDurableSubscriberName() {
-        return durableSubscriberName;
+    public String getName() {
+        return name;
     }
 
     /**

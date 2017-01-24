@@ -20,6 +20,8 @@ import java.util.Objects;
 
 import org.apache.activemq.command.ActiveMQDestination;
 
+import com.dopsun.msg4j.core.delivery.transports.ConsumerMode;
+import com.dopsun.msg4j.core.delivery.transports.ProducerMode;
 import com.dopsun.msg4j.core.delivery.transports.TransportDestination;
 
 /**
@@ -28,11 +30,18 @@ import com.dopsun.msg4j.core.delivery.transports.TransportDestination;
  */
 abstract class ActiveMQTransportDestination implements TransportDestination {
     private final ActiveMQDestination destination;
+    private final ProducerMode producerMode;
+    private final ConsumerMode consumerMode;
 
-    protected ActiveMQTransportDestination(ActiveMQDestination destination) {
+    protected ActiveMQTransportDestination(ActiveMQDestination destination,
+            ProducerMode producerMode, ConsumerMode consumerMode) {
         Objects.requireNonNull(destination);
+        Objects.requireNonNull(producerMode);
+        Objects.requireNonNull(consumerMode);
 
         this.destination = destination;
+        this.producerMode = producerMode;
+        this.consumerMode = consumerMode;
     }
 
     /**
@@ -40,6 +49,16 @@ abstract class ActiveMQTransportDestination implements TransportDestination {
      */
     final ActiveMQDestination getDestination() {
         return destination;
+    }
+
+    @Override
+    public ProducerMode getProducerMode() {
+        return producerMode;
+    }
+
+    @Override
+    public ConsumerMode getConsumerMode() {
+        return consumerMode;
     }
 
     @Override

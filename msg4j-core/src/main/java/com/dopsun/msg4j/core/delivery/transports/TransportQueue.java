@@ -25,9 +25,4 @@ public interface TransportQueue extends TransportDestination {
      * @return <code>true</code> if this is last value queue.
      */
     boolean isLastValueQueue();
-
-    @Override
-    default boolean isDurable() {
-        return true;
-    }
 }

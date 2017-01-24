@@ -16,12 +16,16 @@
 
 package com.dopsun.msg4j.activemq.transport;
 
+import com.dopsun.msg4j.core.delivery.transports.ConsumerMode;
+
 /**
  * @author Dop Sun
  * @since 1.0.0
  */
 public class ActiveMQTransportConfiguration {
     private String brokerUrl;
+
+    private ConsumerMode consumerMode = ConsumerMode.AUTO;
 
     private boolean isTransacted;
 
@@ -53,5 +57,20 @@ public class ActiveMQTransportConfiguration {
      */
     public void setTransacted(boolean isTransacted) {
         this.isTransacted = isTransacted;
+    }
+
+    /**
+     * @return the consumerMode
+     */
+    public ConsumerMode getConsumerMode() {
+        return consumerMode;
+    }
+
+    /**
+     * @param consumerMode
+     *            the consumerMode to set
+     */
+    public void setConsumerMode(ConsumerMode consumerMode) {
+        this.consumerMode = consumerMode;
     }
 }

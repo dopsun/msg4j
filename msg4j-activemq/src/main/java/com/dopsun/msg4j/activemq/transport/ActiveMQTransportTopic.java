@@ -18,6 +18,8 @@ package com.dopsun.msg4j.activemq.transport;
 
 import org.apache.activemq.command.ActiveMQTopic;
 
+import com.dopsun.msg4j.core.delivery.transports.ConsumerMode;
+import com.dopsun.msg4j.core.delivery.transports.ProducerMode;
 import com.dopsun.msg4j.core.delivery.transports.TransportTopic;
 
 /**
@@ -25,12 +27,9 @@ import com.dopsun.msg4j.core.delivery.transports.TransportTopic;
  * @since 1.0.0
  */
 final class ActiveMQTransportTopic extends ActiveMQTransportDestination implements TransportTopic {
-    private final boolean durable;
-
-    public ActiveMQTransportTopic(ActiveMQTopic topic, boolean durable) {
-        super(topic);
-
-        this.durable = durable;
+    public ActiveMQTransportTopic(ActiveMQTopic topic, ProducerMode producerMode,
+            ConsumerMode consumerMode) {
+        super(topic, producerMode, consumerMode);
     }
 
     /**
@@ -38,10 +37,5 @@ final class ActiveMQTransportTopic extends ActiveMQTransportDestination implemen
      */
     final ActiveMQTopic getTopic() {
         return (ActiveMQTopic) getDestination();
-    }
-
-    @Override
-    public boolean isDurable() {
-        return durable;
     }
 }

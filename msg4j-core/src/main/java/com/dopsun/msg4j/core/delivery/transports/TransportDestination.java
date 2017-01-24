@@ -16,15 +16,26 @@
 
 package com.dopsun.msg4j.core.delivery.transports;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
+ * This should be thread safe, as it's expected to be cached by client application, and reused in
+ * different threads.
+ * 
  * @author Dop Sun
  * @since 1.0.0
  */
+@ThreadSafe
 public interface TransportDestination {
     /**
-     * @return <code>true</code> if this destination is durable.
+     * @return mode for producers created for this destination.
      */
-    boolean isDurable();
+    ProducerMode getProducerMode();
+
+    /**
+     * @return mode for consumers created for this destination.
+     */
+    ConsumerMode getConsumerMode();
 
     @Override
     int hashCode();

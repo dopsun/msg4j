@@ -33,6 +33,8 @@ import org.apache.activemq.ActiveMQSession;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 
+import com.dopsun.msg4j.core.delivery.transports.ConsumerMode;
+import com.dopsun.msg4j.core.delivery.transports.ProducerMode;
 import com.dopsun.msg4j.core.delivery.transports.Transport;
 import com.dopsun.msg4j.core.delivery.transports.TransportCapability;
 import com.dopsun.msg4j.core.delivery.transports.TransportDestination;
@@ -47,31 +49,59 @@ import com.dopsun.msg4j.core.messages.Message;
 import com.google.common.collect.ImmutableList;
 
 /**
+ * Transport implementation based on ActiveMQ.
+ * 
+ * <p>
+ * Notes to implementors:
+ * <ul>
+ * <li>Consumer mode is session specific, so if different destination have different mode, then
+ * multiple sessions will be created.</li>
+ * <li>Producer will be created on the session with default consumer mode passed in as
+ * configuration.</li>
+ * <li>Transaction is a passed in parameters. Session for producer will be configured for the
+ * transaction.</li>
+ * </ul>
+ * </p>
+ * 
  * @author Dop Sun
  * @since 1.0.0
  */
 public class ActiveMQTransport implements Transport {
-    /** @formatter:off */
-    private static final EnumSet<TransportCapability> DEF_CAPABILITIES = EnumSet
+    /**
+     * Default capability of ActiveMQ transport. The exact capability may different from this, e.g.
+     * transacted or not.
+     */
+    /* @formatter:off */
+    private static final EnumSet<TransportCapability> DEFAULT_CAPABILITIES = EnumSet
             .of(
                     TransportCapability.Guaranteed, 
                     TransportCapability.DurableSubscriber,
                     TransportCapability.Selector
                );
-    /** @formatter:on */
+    /* @formatter:on */
 
     private final ActiveMQSerializer serializer;
     private final boolean isTransacted;
 
     private final EnumSet<TransportCapability> capabilities;
 
-    private final ConcurrentHashMap<String, ActiveMQTransportQueue> queueBySubject = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, ActiveMQTransportTopic> topicBySubject = new ConcurrentHashMap<>();
-
     private final ConcurrentHashMap<ActiveMQTransportDestination, ActiveMQMessageProducer> producerBySubject = new ConcurrentHashMap<>();
 
     private final ActiveMQConnection connection;
-    private final ActiveMQSession session;
+
+    /**
+     * Sessions indexed by {@link ConsumerMode}. This should be manipulated by
+     * {@link #getOrCreateSession(ConsumerMode)}
+     */
+    private final ConcurrentHashMap<ConsumerMode, ActiveMQSession> sessionByConsumerMode = new ConcurrentHashMap<>();
+
+    /**
+     * This is the session created together with default consumer mode.
+     * <p>
+     * <b>Node:</b>: this session has been included in <code>sessionByConsumerMode</code>.
+     * </p>
+     */
+    private final ActiveMQSession producerSession;
 
     /**
      * Listers is volatile and immutable. It can be replaced as a whole. See
@@ -86,11 +116,12 @@ public class ActiveMQTransport implements Transport {
     public ActiveMQTransport(ActiveMQTransportConfiguration config) throws JMSException {
         Objects.requireNonNull(config);
         Objects.requireNonNull(config.getBrokerUrl());
+        Objects.requireNonNull(config.getConsumerMode());
 
         this.isTransacted = config.isTransacted();
         this.serializer = new ActiveMQSerializer();
 
-        this.capabilities = EnumSet.copyOf(DEF_CAPABILITIES);
+        this.capabilities = EnumSet.copyOf(DEFAULT_CAPABILITIES);
         if (isTransacted) {
             this.capabilities.add(TransportCapability.Transaction);
         }
@@ -105,11 +136,9 @@ public class ActiveMQTransport implements Transport {
 
         amqConnection.start();
 
-        ActiveMQSession amqSession = (ActiveMQSession) amqConnection.createSession(isTransacted,
-                Session.AUTO_ACKNOWLEDGE);
-
         this.connection = amqConnection;
-        this.session = amqSession;
+
+        this.producerSession = getOrCreateSession(config.getConsumerMode());
     }
 
     private void onConnectionException(JMSException exception) {
@@ -127,7 +156,11 @@ public class ActiveMQTransport implements Transport {
             }
             producerBySubject.clear();
 
-            this.session.close();
+            for (ActiveMQSession session : sessionByConsumerMode.values()) {
+                session.close();
+            }
+            sessionByConsumerMode.clear();
+
             this.connection.stop();
 
             if (this.connection instanceof ActiveMQConnection) {
@@ -174,48 +207,32 @@ public class ActiveMQTransport implements Transport {
     }
 
     @Override
-    public ActiveMQTransportQueue createQueue(String subject, boolean lastValueQueue)
-            throws TransportException, UnsupportedOperationException {
+    public ActiveMQTransportQueue createQueue(String subject, ProducerMode producerMode,
+            ConsumerMode consumerMode) throws TransportException, UnsupportedOperationException {
         Objects.requireNonNull(subject);
-
-        if (lastValueQueue) {
-            throw new UnsupportedOperationException("Last-value queue is not supported.");
-        }
-
-        ActiveMQTransportQueue transportQueue = queueBySubject.get(subject);
-        if (transportQueue != null) {
-            return transportQueue;
-        }
+        Objects.requireNonNull(producerMode);
+        Objects.requireNonNull(consumerMode);
 
         try {
+            ActiveMQSession session = getOrCreateSession(consumerMode);
             ActiveMQQueue queue = (ActiveMQQueue) session.createQueue(subject);
-            transportQueue = new ActiveMQTransportQueue(queue);
-            queueBySubject.put(subject, transportQueue);
-            return transportQueue;
+            return new ActiveMQTransportQueue(queue, producerMode, consumerMode);
         } catch (JMSException e) {
             throw new TransportException(e);
         }
     }
 
     @Override
-    public TransportTopic createTopic(String subject, boolean durable) throws TransportException {
+    public TransportTopic createTopic(String subject, ProducerMode producerMode,
+            ConsumerMode consumerMode) throws TransportException {
         Objects.requireNonNull(subject);
-
-        ActiveMQTransportTopic transportTopic = topicBySubject.get(subject);
-        if (transportTopic != null) {
-            if (transportTopic.isDurable() != durable) {
-                throw new IllegalArgumentException(
-                        "Subject '" + subject + "' should be durable: " + durable);
-            }
-
-            return transportTopic;
-        }
+        Objects.requireNonNull(producerMode);
+        Objects.requireNonNull(consumerMode);
 
         try {
+            ActiveMQSession session = getOrCreateSession(consumerMode);
             ActiveMQTopic topic = (ActiveMQTopic) session.createTopic(subject);
-            transportTopic = new ActiveMQTransportTopic(topic, durable);
-            topicBySubject.put(subject, transportTopic);
-            return transportTopic;
+            return new ActiveMQTransportTopic(topic, producerMode, consumerMode);
         } catch (JMSException e) {
             throw new TransportException(e);
         }
@@ -225,18 +242,21 @@ public class ActiveMQTransport implements Transport {
     public void publish(TransportDestination destination, Message message)
             throws TransportException {
         Objects.requireNonNull(destination);
+        Objects.requireNonNull(message);
+
         if (!(destination instanceof ActiveMQTransportDestination)) {
             throw new IllegalArgumentException();
         }
+
         ActiveMQTransportDestination amqDestination = (ActiveMQTransportDestination) destination;
 
         ActiveMQMessageProducer producer = producerBySubject.get(amqDestination);
         if (producer == null) {
             try {
-                producer = (ActiveMQMessageProducer) session
+                producer = (ActiveMQMessageProducer) producerSession
                         .createProducer(amqDestination.getDestination());
 
-                if (amqDestination.isDurable()) {
+                if (ProducerMode.PERSISTENT == amqDestination.getProducerMode()) {
                     producer.setDeliveryMode(DeliveryMode.PERSISTENT);
                 }
             } catch (JMSException e) {
@@ -246,7 +266,7 @@ public class ActiveMQTransport implements Transport {
         }
 
         try {
-            javax.jms.Message jmsMessage = serializer.toJms(session, message);
+            javax.jms.Message jmsMessage = serializer.toJms(producerSession, message);
             producer.send(jmsMessage);
         } catch (JMSException e) {
             throw new TransportException(e);
@@ -258,20 +278,28 @@ public class ActiveMQTransport implements Transport {
             TransportSubscriberSettings settings, Consumer<Message> consumer)
             throws TransportException {
         Objects.requireNonNull(destination);
+        Objects.requireNonNull(settings);
+        Objects.requireNonNull(consumer);
+
         if (!(destination instanceof ActiveMQTransportDestination)) {
             throw new IllegalArgumentException();
         }
-        Objects.requireNonNull(settings);
-        Objects.requireNonNull(consumer);
 
         if (settings.isBrowsingOnly()) {
             throw new UnsupportedOperationException("Browsing is not supported.");
         }
-        if (settings.isDurable() && !(destination instanceof ActiveMQTransportTopic)) {
-            throw new UnsupportedOperationException("Durable subscription only for topic.");
+        if (settings.isDurable()) {
+            if (settings.getName() == null) {
+                throw new IllegalArgumentException("Durable subscription requires name.");
+            }
+
+            if (!(destination instanceof ActiveMQTransportTopic)) {
+                throw new UnsupportedOperationException("Durable subscription only for topic.");
+            }
         }
 
         ActiveMQTransportDestination amqDestination = (ActiveMQTransportDestination) destination;
+        ActiveMQSession session = getOrCreateSession(destination.getConsumerMode());
 
         try {
             MessageConsumer amqConsumer;
@@ -280,10 +308,10 @@ public class ActiveMQTransport implements Transport {
 
                 if (settings.getSelector() != null) {
                     amqConsumer = session.createDurableSubscriber(amqTopic.getTopic(),
-                            settings.getDurableSubscriberName(), settings.getSelector(), false);
+                            settings.getName(), settings.getSelector(), false);
                 } else {
                     amqConsumer = session.createDurableSubscriber(amqTopic.getTopic(),
-                            settings.getDurableSubscriberName());
+                            settings.getName());
                 }
             } else {
                 if (settings.getSelector() != null) {
@@ -311,8 +339,7 @@ public class ActiveMQTransport implements Transport {
                 }
             });
 
-            return new ActiveMQTransportSubscription(session, amqConsumer,
-                    settings.getDurableSubscriberName());
+            return new ActiveMQTransportSubscription(session, amqConsumer, settings.getName());
         } catch (JMSException e) {
             throw new TransportException(e);
         }
@@ -320,8 +347,12 @@ public class ActiveMQTransport implements Transport {
 
     @Override
     public void commit() throws TransportException, UnsupportedOperationException {
+        if (!isTransacted) {
+            throw new UnsupportedOperationException("Transaction is not supported.");
+        }
+
         try {
-            session.commit();
+            producerSession.commit();
         } catch (JMSException e) {
             throw new TransportException(e);
         }
@@ -329,8 +360,12 @@ public class ActiveMQTransport implements Transport {
 
     @Override
     public void rollback() throws TransportException, UnsupportedOperationException {
+        if (!isTransacted) {
+            throw new UnsupportedOperationException("Transaction is not supported.");
+        }
+
         try {
-            session.rollback();
+            producerSession.rollback();
         } catch (JMSException e) {
             throw new TransportException(e);
         }
@@ -341,5 +376,33 @@ public class ActiveMQTransport implements Transport {
         for (TransportEventListener listener : listeners) {
             listener.onEvent(this, eventArgs);
         }
+    }
+
+    private ActiveMQSession getOrCreateSession(ConsumerMode consumerMode) {
+        return sessionByConsumerMode.computeIfAbsent(consumerMode, mode -> {
+            try {
+                int ackMode = Session.AUTO_ACKNOWLEDGE;
+                switch (mode) {
+                case AUTO:
+                    ackMode = Session.AUTO_ACKNOWLEDGE;
+                    break;
+                case CLIENT:
+                    ackMode = Session.CLIENT_ACKNOWLEDGE;
+                    break;
+                case DUPS_OK:
+                    ackMode = Session.DUPS_OK_ACKNOWLEDGE;
+                    break;
+                case NO_ACK:
+                    ackMode = Session.DUPS_OK_ACKNOWLEDGE;
+                    break;
+                default:
+                    throw new RuntimeException("Unrecognized acknowledge mode: " + mode);
+                }
+
+                return (ActiveMQSession) connection.createSession(isTransacted, ackMode);
+            } catch (JMSException e) {
+                throw new RuntimeException("Failed to create session.", e);
+            }
+        });
     }
 }

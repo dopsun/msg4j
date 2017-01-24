@@ -24,6 +24,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.dopsun.msg4j.core.delivery.transports.ConsumerMode;
+import com.dopsun.msg4j.core.delivery.transports.ProducerMode;
 import com.dopsun.msg4j.core.delivery.transports.TransportSubscriberSettings;
 import com.dopsun.msg4j.core.delivery.transports.TransportSubscription;
 import com.dopsun.msg4j.core.delivery.transports.TransportTopic;
@@ -70,7 +72,8 @@ public class ActiveMQTransportTest {
         final List<Message> list = Lists.newArrayList();
 
         try (ActiveMQTransport transport = new ActiveMQTransport(config)) {
-            TransportTopic topic = transport.createTopic("TEST", false);
+            TransportTopic topic = transport.createTopic("TEST", ProducerMode.NON_PERSISTENT,
+                    ConsumerMode.NO_ACK);
             TransportSubscriberSettings settings = TransportSubscriberSettings.create();
 
             TransportSubscription subscription = transport.subscribe(topic, settings, (m) -> {

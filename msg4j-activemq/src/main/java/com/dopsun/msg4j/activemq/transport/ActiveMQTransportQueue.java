@@ -18,6 +18,8 @@ package com.dopsun.msg4j.activemq.transport;
 
 import org.apache.activemq.command.ActiveMQQueue;
 
+import com.dopsun.msg4j.core.delivery.transports.ConsumerMode;
+import com.dopsun.msg4j.core.delivery.transports.ProducerMode;
 import com.dopsun.msg4j.core.delivery.transports.TransportQueue;
 
 /**
@@ -26,8 +28,9 @@ import com.dopsun.msg4j.core.delivery.transports.TransportQueue;
  */
 final class ActiveMQTransportQueue extends ActiveMQTransportDestination implements TransportQueue {
 
-    protected ActiveMQTransportQueue(ActiveMQQueue queue) {
-        super(queue);
+    protected ActiveMQTransportQueue(ActiveMQQueue queue, ProducerMode producerMode,
+            ConsumerMode consumerMode) {
+        super(queue, producerMode, consumerMode);
     }
 
     /**
