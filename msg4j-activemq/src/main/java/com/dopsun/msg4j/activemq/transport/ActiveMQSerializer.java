@@ -203,36 +203,36 @@ final class ActiveMQSerializer {
             FieldKey fieldKey = resolveFieldKeyFromJmsKey(jmsFieldName);
 
             switch (fieldKey.fieldType) {
-            case Byte:
+            case BYTE:
                 message.putByte(fieldKey.fieldName, jmsMapMessage.getByte(jmsFieldName));
                 break;
-            case Char:
+            case CHAR:
                 message.putChar(fieldKey.fieldName, jmsMapMessage.getChar(jmsFieldName));
                 break;
-            case Short:
+            case SHORT:
                 message.putShort(fieldKey.fieldName, jmsMapMessage.getShort(jmsFieldName));
                 break;
-            case Int:
+            case INT:
                 message.putInt(fieldKey.fieldName, jmsMapMessage.getInt(jmsFieldName));
                 break;
-            case Long:
+            case LONG:
                 message.putLong(fieldKey.fieldName, jmsMapMessage.getLong(jmsFieldName));
                 break;
-            case Float:
+            case FLOAT:
                 message.putFloat(fieldKey.fieldName, jmsMapMessage.getFloat(jmsFieldName));
                 break;
-            case Double:
+            case DOUBLE:
                 message.putDouble(fieldKey.fieldName, jmsMapMessage.getDouble(jmsFieldName));
                 break;
-            case String:
+            case STRING:
                 message.putString(fieldKey.fieldName, jmsMapMessage.getString(jmsFieldName));
                 break;
-            case Message:
+            case MESSAGE:
                 javax.jms.Message jmsMessageValue = (javax.jms.Message) jmsMapMessage
                         .getObject(jmsFieldName);
                 message.putMessage(fieldKey.fieldName, fromJms(jmsMessageValue).toImmutable());
                 break;
-            case MessageList:
+            case MESSAGE_LIST:
                 @SuppressWarnings("unchecked")
                 List<javax.jms.Message> jmsListValue = (List<javax.jms.Message>) jmsMapMessage
                         .getObject(jmsFieldName);
@@ -286,34 +286,34 @@ final class ActiveMQSerializer {
             this.fieldType = fieldType;
 
             switch (fieldType) {
-            case Byte:
+            case BYTE:
                 this.jmsKeyName = fieldName + ".b";
                 break;
-            case Char:
+            case CHAR:
                 this.jmsKeyName = fieldName + ".c";
                 break;
-            case Short:
+            case SHORT:
                 this.jmsKeyName = fieldName + ".s";
                 break;
-            case Int:
+            case INT:
                 this.jmsKeyName = fieldName + ".i";
                 break;
-            case Long:
+            case LONG:
                 this.jmsKeyName = fieldName + ".l";
                 break;
-            case Float:
+            case FLOAT:
                 this.jmsKeyName = fieldName + ".f";
                 break;
-            case Double:
+            case DOUBLE:
                 this.jmsKeyName = fieldName + ".d";
                 break;
-            case String:
+            case STRING:
                 this.jmsKeyName = fieldName + ".S";
                 break;
-            case Message:
+            case MESSAGE:
                 this.jmsKeyName = fieldName + ".M";
                 break;
-            case MessageList:
+            case MESSAGE_LIST:
                 this.jmsKeyName = fieldName + ".L";
                 break;
             default:
@@ -333,34 +333,34 @@ final class ActiveMQSerializer {
             char typeKey = jmsKey.charAt(jmsKey.length() - 1);
             switch (typeKey) {
             case 'b':
-                this.fieldType = FieldType.Byte;
+                this.fieldType = FieldType.BYTE;
                 break;
             case 'c':
-                this.fieldType = FieldType.Char;
+                this.fieldType = FieldType.CHAR;
                 break;
             case 's':
-                this.fieldType = FieldType.Short;
+                this.fieldType = FieldType.SHORT;
                 break;
             case 'i':
-                this.fieldType = FieldType.Int;
+                this.fieldType = FieldType.INT;
                 break;
             case 'l':
-                this.fieldType = FieldType.Long;
+                this.fieldType = FieldType.LONG;
                 break;
             case 'f':
-                this.fieldType = FieldType.Float;
+                this.fieldType = FieldType.FLOAT;
                 break;
             case 'd':
-                this.fieldType = FieldType.Double;
+                this.fieldType = FieldType.DOUBLE;
                 break;
             case 'S':
-                this.fieldType = FieldType.String;
+                this.fieldType = FieldType.STRING;
                 break;
             case 'M':
-                this.fieldType = FieldType.Message;
+                this.fieldType = FieldType.MESSAGE;
                 break;
             case 'L':
-                this.fieldType = FieldType.MessageList;
+                this.fieldType = FieldType.MESSAGE_LIST;
                 break;
             default:
                 throw new RuntimeException("Unrecognized JMS key: " + jmsKey);

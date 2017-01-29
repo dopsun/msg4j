@@ -55,7 +55,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.ByteField)) {
-            throw new InvalidTypeException(fieldName, FieldType.Byte, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.BYTE, field.type());
         }
 
         fields().put(fieldName, new Field.ByteField(value));
@@ -67,7 +67,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.CharField)) {
-            throw new InvalidTypeException(fieldName, FieldType.Char, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.CHAR, field.type());
         }
 
         fields().put(fieldName, new Field.CharField(value));
@@ -79,7 +79,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.ShortField)) {
-            throw new InvalidTypeException(fieldName, FieldType.Short, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.SHORT, field.type());
         }
 
         fields().put(fieldName, new Field.ShortField(value));
@@ -91,7 +91,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.IntField)) {
-            throw new InvalidTypeException(fieldName, FieldType.Int, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.INT, field.type());
         }
 
         fields().put(fieldName, new Field.IntField(value));
@@ -103,7 +103,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.LongField)) {
-            throw new InvalidTypeException(fieldName, FieldType.Long, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.LONG, field.type());
         }
 
         fields().put(fieldName, new Field.LongField(value));
@@ -115,7 +115,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.FloatField)) {
-            throw new InvalidTypeException(fieldName, FieldType.Float, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.FLOAT, field.type());
         }
 
         fields().put(fieldName, new Field.FloatField(value));
@@ -127,7 +127,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.DoubleField)) {
-            throw new InvalidTypeException(fieldName, FieldType.Double, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.DOUBLE, field.type());
         }
 
         fields().put(fieldName, new Field.DoubleField(value));
@@ -140,7 +140,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.StringField)) {
-            throw new InvalidTypeException(fieldName, FieldType.String, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.STRING, field.type());
         }
 
         fields().put(fieldName, new Field.StringField(value));
@@ -153,7 +153,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.MessageField)) {
-            throw new InvalidTypeException(fieldName, FieldType.Message, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.MESSAGE, field.type());
         }
 
         fields().put(fieldName, new Field.MessageField(value));
@@ -167,7 +167,7 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
 
         Field field = fields().get(fieldName);
         if (field != null && !(field instanceof Field.MessageListField)) {
-            throw new InvalidTypeException(fieldName, FieldType.MessageList, field.type());
+            throw new InvalidTypeException(fieldName, FieldType.MESSAGE_LIST, field.type());
         }
 
         fields().put(fieldName, new Field.MessageListField(ImmutableList.copyOf(value)));

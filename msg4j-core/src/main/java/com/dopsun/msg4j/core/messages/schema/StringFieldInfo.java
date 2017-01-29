@@ -25,7 +25,7 @@ public final class StringFieldInfo extends FieldInfo {
 
     @Override
     public final FieldType type() {
-        return FieldType.String;
+        return FieldType.STRING;
     }
 
     /**

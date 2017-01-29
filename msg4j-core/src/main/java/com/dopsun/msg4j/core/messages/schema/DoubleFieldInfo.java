@@ -25,7 +25,7 @@ public final class DoubleFieldInfo extends FieldInfo {
 
     @Override
     public final FieldType type() {
-        return FieldType.Double;
+        return FieldType.DOUBLE;
     }
 
     /**

@@ -6,8 +6,7 @@ package com.dopsun.msg4j.core.messages;
 
 import org.junit.Test;
 
-import com.dopsun.msg4j.core.messages.Field;
-import com.dopsun.msg4j.core.messages.FieldType;
+import com.google.common.base.CaseFormat;
 
 /**
  * @author Dop Sun
@@ -19,7 +18,9 @@ public class FIeldTest {
     public void givenFieldTypeThenEveryItemHasItsOwnFieldDefinition()
             throws ClassNotFoundException {
         for (FieldType type : FieldType.values()) {
-            Class.forName(Field.class.getName() + "$" + type.name() + "Field");
+            String upperCamelName = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,
+                    type.name());
+            Class.forName(Field.class.getName() + "$" + upperCamelName + "Field");
         }
     }
 }

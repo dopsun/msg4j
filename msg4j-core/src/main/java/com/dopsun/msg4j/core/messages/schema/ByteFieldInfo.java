@@ -24,7 +24,7 @@ public final class ByteFieldInfo extends FieldInfo {
 
     @Override
     public final FieldType type() {
-        return FieldType.Byte;
+        return FieldType.BYTE;
     }
 
     /**

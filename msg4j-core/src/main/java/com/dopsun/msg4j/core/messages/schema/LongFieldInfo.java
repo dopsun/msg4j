@@ -25,7 +25,7 @@ public final class LongFieldInfo extends FieldInfo {
 
     @Override
     public final FieldType type() {
-        return FieldType.Long;
+        return FieldType.LONG;
     }
 
     /**

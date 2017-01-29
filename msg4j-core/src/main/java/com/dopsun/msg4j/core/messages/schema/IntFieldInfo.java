@@ -25,7 +25,7 @@ public final class IntFieldInfo extends FieldInfo {
 
     @Override
     public final FieldType type() {
-        return FieldType.Int;
+        return FieldType.INT;
     }
 
     /**

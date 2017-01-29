@@ -35,7 +35,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.Byte;
+            return FieldType.BYTE;
         }
 
         public byte value() {
@@ -52,7 +52,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.Char;
+            return FieldType.CHAR;
         }
 
         public char value() {
@@ -69,7 +69,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.Short;
+            return FieldType.SHORT;
         }
 
         public short value() {
@@ -86,7 +86,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.Int;
+            return FieldType.INT;
         }
 
         public int value() {
@@ -103,7 +103,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.Long;
+            return FieldType.LONG;
         }
 
         public long value() {
@@ -120,7 +120,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.Float;
+            return FieldType.FLOAT;
         }
 
         public float value() {
@@ -137,7 +137,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.Double;
+            return FieldType.DOUBLE;
         }
 
         public double value() {
@@ -156,7 +156,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.String;
+            return FieldType.STRING;
         }
 
         public String value() {
@@ -175,7 +175,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.Message;
+            return FieldType.MESSAGE;
         }
 
         public ImmutableMessage value() {
@@ -194,7 +194,7 @@ abstract class Field {
 
         @Override
         public FieldType type() {
-            return FieldType.MessageList;
+            return FieldType.MESSAGE_LIST;
         }
 
         public List<ImmutableMessage> value() {

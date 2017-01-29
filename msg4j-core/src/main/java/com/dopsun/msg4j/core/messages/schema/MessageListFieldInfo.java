@@ -27,7 +27,7 @@ public final class MessageListFieldInfo extends FieldInfo {
 
     @Override
     public final FieldType type() {
-        return FieldType.MessageList;
+        return FieldType.MESSAGE_LIST;
     }
 
     /**

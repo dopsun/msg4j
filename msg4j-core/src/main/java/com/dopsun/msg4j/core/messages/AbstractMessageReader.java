@@ -53,34 +53,34 @@ abstract class AbstractMessageReader implements MessageReader {
             Field field = entry.getValue();
 
             switch (field.type()) {
-            case Byte:
+            case BYTE:
                 visitor.visit(entry.getKey(), field.type(), ((Field.ByteField) field).value());
                 break;
-            case Char:
+            case CHAR:
                 visitor.visit(entry.getKey(), field.type(), ((Field.CharField) field).value());
                 break;
-            case Short:
+            case SHORT:
                 visitor.visit(entry.getKey(), field.type(), ((Field.ShortField) field).value());
                 break;
-            case Int:
+            case INT:
                 visitor.visit(entry.getKey(), field.type(), ((Field.IntField) field).value());
                 break;
-            case Long:
+            case LONG:
                 visitor.visit(entry.getKey(), field.type(), ((Field.LongField) field).value());
                 break;
-            case Float:
+            case FLOAT:
                 visitor.visit(entry.getKey(), field.type(), ((Field.FloatField) field).value());
                 break;
-            case Double:
+            case DOUBLE:
                 visitor.visit(entry.getKey(), field.type(), ((Field.DoubleField) field).value());
                 break;
-            case String:
+            case STRING:
                 visitor.visit(entry.getKey(), field.type(), ((Field.StringField) field).value());
                 break;
-            case Message:
+            case MESSAGE:
                 visitor.visit(entry.getKey(), field.type(), ((Field.MessageField) field).value());
                 break;
-            case MessageList:
+            case MESSAGE_LIST:
                 visitor.visit(entry.getKey(), field.type(),
                         ((Field.MessageListField) field).value());
                 break;
@@ -132,7 +132,7 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.ByteField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.Byte, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.BYTE, field.type());
     }
 
     @Override
@@ -148,7 +148,7 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.CharField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.Char, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.CHAR, field.type());
     }
 
     @Override
@@ -164,7 +164,7 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.ShortField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.Short, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.SHORT, field.type());
     }
 
     @Override
@@ -180,7 +180,7 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.IntField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.Int, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.INT, field.type());
     }
 
     @Override
@@ -196,7 +196,7 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.LongField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.Long, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.LONG, field.type());
     }
 
     @Override
@@ -212,7 +212,7 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.FloatField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.Float, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.FLOAT, field.type());
     }
 
     @Override
@@ -228,7 +228,7 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.DoubleField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.Double, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.DOUBLE, field.type());
     }
 
     @Override
@@ -244,7 +244,7 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.StringField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.String, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.STRING, field.type());
     }
 
     @Override
@@ -261,7 +261,7 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.MessageField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.Message, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.MESSAGE, field.type());
     }
 
     @Override
@@ -278,6 +278,6 @@ abstract class AbstractMessageReader implements MessageReader {
             return ((Field.MessageListField) field).value();
         }
 
-        throw new InvalidTypeException(fieldName, FieldType.MessageList, field.type());
+        throw new InvalidTypeException(fieldName, FieldType.MESSAGE_LIST, field.type());
     }
 }

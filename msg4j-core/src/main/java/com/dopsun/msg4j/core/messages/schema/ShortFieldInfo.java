@@ -24,7 +24,7 @@ public final class ShortFieldInfo extends FieldInfo {
 
     @Override
     public final FieldType type() {
-        return FieldType.Short;
+        return FieldType.SHORT;
     }
 
     /**

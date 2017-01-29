@@ -24,7 +24,7 @@ public final class CharFieldInfo extends FieldInfo {
 
     @Override
     public final FieldType type() {
-        return FieldType.Char;
+        return FieldType.CHAR;
     }
 
     /**

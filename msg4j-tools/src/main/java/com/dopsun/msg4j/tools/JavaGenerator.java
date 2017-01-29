@@ -78,7 +78,10 @@ public class JavaGenerator implements Generator {
      * @return
      */
     public String getFieldInfoString(FieldInfo fieldInfo) {
-        return fieldInfo.getType().name() + "FieldInfo";
+        String upperCamelName = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,
+                fieldInfo.getType().name());
+
+        return upperCamelName + "FieldInfo";
     }
 
     /**
@@ -87,12 +90,12 @@ public class JavaGenerator implements Generator {
      */
     public boolean canFieldValueOptional(FieldInfo fieldInfo) {
         switch (fieldInfo.getType()) {
-        case Int:
-        case Long:
-        case Double:
-        case String:
-        case Message:
-        case MessageList:
+        case INT:
+        case LONG:
+        case DOUBLE:
+        case STRING:
+        case MESSAGE:
+        case MESSAGE_LIST:
             return true;
         default:
             return false;
@@ -106,41 +109,41 @@ public class JavaGenerator implements Generator {
      */
     public String getFieldValueTypeString(FieldInfo fieldInfo, boolean optional) {
         switch (fieldInfo.getType()) {
-        case Byte:
+        case BYTE:
             if (optional) {
                 throw new IllegalArgumentException();
             }
 
             return "byte";
-        case Char:
+        case CHAR:
             if (optional) {
                 throw new IllegalArgumentException();
             }
 
             return "char";
-        case Short:
+        case SHORT:
             if (optional) {
                 throw new IllegalArgumentException();
             }
 
             return "short";
-        case Int:
+        case INT:
             return optional ? "OptionalInt" : "int";
-        case Long:
+        case LONG:
             return optional ? "OptionalLong" : "long";
-        case Float:
+        case FLOAT:
             if (optional) {
                 throw new IllegalArgumentException();
             }
 
             return "float";
-        case Double:
+        case DOUBLE:
             return optional ? "OptionalDouble" : "double";
-        case String:
+        case STRING:
             return optional ? "Optional<String>" : "String";
-        case Message:
+        case MESSAGE:
             return optional ? "Optional<ImmutableMessage>" : "ImmutableMessage";
-        case MessageList:
+        case MESSAGE_LIST:
             return optional ? "Optional<List<ImmutableMessage>>" : "List<ImmutableMessage>";
         default:
             throw new RuntimeException("Unrecognized type: " + fieldInfo.getType());

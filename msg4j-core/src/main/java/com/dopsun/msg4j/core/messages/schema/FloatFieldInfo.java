@@ -24,7 +24,7 @@ public final class FloatFieldInfo extends FieldInfo {
 
     @Override
     public final FieldType type() {
-        return FieldType.Float;
+        return FieldType.FLOAT;
     }
 
     /**

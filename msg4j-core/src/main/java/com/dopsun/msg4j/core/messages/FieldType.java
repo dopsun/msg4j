@@ -28,50 +28,50 @@ public enum FieldType {
     /**
      * @see Byte
      */
-    Byte,
+    BYTE,
 
     /**
      * @see Character
      */
-    Char,
+    CHAR,
 
     /**
      * @see Short
      */
-    Short,
+    SHORT,
 
     /**
      * @see Integer
      */
-    Int,
+    INT,
 
     /**
      * @see Long
      */
-    Long,
+    LONG,
 
     /**
      * @see Float
      */
-    Float,
+    FLOAT,
 
     /**
      * @see Double
      */
-    Double,
+    DOUBLE,
 
     /**
      * @see String
      */
-    String,
+    STRING,
 
     /**
      * @see Message
      */
-    Message,
+    MESSAGE,
 
     /**
      * @see List
      */
-    MessageList
+    MESSAGE_LIST
 }
