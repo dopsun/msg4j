@@ -40,17 +40,17 @@ public class YamlConstInfo implements ConstInfo {
     }
 
     @Override
-    public String name() {
+    public String getName() {
         return name;
     }
 
     @Override
-    public ConstType type() {
+    public ConstType getType() {
         return type;
     }
 
     @Override
-    public String value() {
+    public String getValue() {
         return value;
     }
 

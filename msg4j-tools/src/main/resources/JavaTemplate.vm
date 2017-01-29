@@ -72,6 +72,13 @@ public final class ${containerClassName} {
             .build();
     /** @formatter:on */
 
+    public static class Consts {
+#foreach ($const in $model.consts)
+        public static final ${generator.getConstValueTypeString($const)} $const.name = ${generator.getConstValueText($const)};
+#end
+
+    }
+
     public static class Fields {
 #foreach ($field in $model.fields)
         public static final String ${generator.nameToConst($field.name)} = "${field.id}";

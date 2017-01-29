@@ -24,15 +24,15 @@ public interface ConstInfo {
     /**
      * @return
      */
-    String name();
+    String getName();
 
     /**
      * @return
      */
-    ConstType type();
+    ConstType getType();
 
     /**
      * @return
      */
-    String value();
+    String getValue();
 }

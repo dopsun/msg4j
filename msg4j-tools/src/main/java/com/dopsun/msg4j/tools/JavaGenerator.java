@@ -25,6 +25,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
+import com.dopsun.msg4j.tools.model.ConstInfo;
 import com.dopsun.msg4j.tools.model.FieldInfo;
 import com.dopsun.msg4j.tools.model.ModelInfo;
 import com.google.common.base.CaseFormat;
@@ -99,6 +100,42 @@ public class JavaGenerator implements Generator {
             return true;
         default:
             return false;
+        }
+    }
+
+    /**
+     * @param constInfo
+     * @return
+     */
+    public String getConstValueText(ConstInfo constInfo) {
+        switch (constInfo.getType()) {
+        case INT:
+        case LONG:
+        case DOUBLE:
+            return constInfo.getValue();
+        case STRING:
+            return "\"" + constInfo.getValue() + "\"";
+        default:
+            throw new RuntimeException("Unrecognized const value type: " + constInfo);
+        }
+    }
+    
+    /**
+     * @param constInfo
+     * @return
+     */
+    public String getConstValueTypeString(ConstInfo constInfo) {
+        switch (constInfo.getType()) {
+        case INT:
+            return "int";
+        case LONG:
+            return "long";
+        case DOUBLE:
+            return "double";
+        case STRING:
+            return "String";
+        default:
+            throw new RuntimeException("Unrecognized const value type: " + constInfo);
         }
     }
 
