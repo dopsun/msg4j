@@ -45,6 +45,19 @@ public interface MessageWriter {
      * @throws InvalidTypeException
      *             if field exists but not expected type.
      */
+    void putBoolean(String fieldName, boolean value) throws InvalidTypeException;
+
+    /**
+     * Puts value to field specified by <code>fieldName</code>.
+     * 
+     * @param fieldName
+     *            field name
+     * @param value
+     *            value to put
+     * 
+     * @throws InvalidTypeException
+     *             if field exists but not expected type.
+     */
     void putByte(String fieldName, byte value) throws InvalidTypeException;
 
     /**

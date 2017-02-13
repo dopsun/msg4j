@@ -26,6 +26,23 @@ import java.util.Objects;
 abstract class Field {
     public abstract FieldType type();
 
+    public static class BooleanField extends Field {
+        private final boolean value;
+
+        public BooleanField(boolean value) {
+            this.value = value;
+        }
+
+        @Override
+        public FieldType type() {
+            return FieldType.BOOLEAN;
+        }
+
+        public boolean value() {
+            return value;
+        }
+    }
+
     public static class ByteField extends Field {
         private final byte value;
 

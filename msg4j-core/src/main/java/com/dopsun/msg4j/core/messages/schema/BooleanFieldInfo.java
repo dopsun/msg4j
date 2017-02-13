@@ -17,7 +17,6 @@
 package com.dopsun.msg4j.core.messages.schema;
 
 import java.util.Objects;
-import java.util.OptionalLong;
 
 import com.dopsun.msg4j.core.messages.FieldType;
 import com.dopsun.msg4j.core.messages.MessageReader;
@@ -27,29 +26,29 @@ import com.dopsun.msg4j.core.messages.MessageWriter;
  * @author Dop Sun
  * @since 1.0.0
  */
-public final class LongFieldInfo extends FieldInfo {
+public final class BooleanFieldInfo extends FieldInfo {
     /**
      * @param name
      */
-    public LongFieldInfo(String name) {
+    public BooleanFieldInfo(String name) {
         super(name);
     }
 
     @Override
     public final FieldType type() {
-        return FieldType.LONG;
+        return FieldType.BOOLEAN;
     }
 
     /**
      * @param message
      * @return
      * 
-     * @see MessageReader#getLong(String)
+     * @see MessageReader#getByte(String)
      */
-    public long get(MessageReader message) {
+    public boolean get(MessageReader message) {
         Objects.requireNonNull(message);
 
-        return message.getLong(name());
+        return message.getBoolean(name());
     }
 
     /**
@@ -57,35 +56,23 @@ public final class LongFieldInfo extends FieldInfo {
      * @param defaultValue
      * @return
      * 
-     * @see MessageReader#tryGetLong(String, long)
+     * @see MessageReader#tryGetByte(String, byte)
      */
-    public long tryGet(MessageReader message, long defaultValue) {
+    public boolean tryGet(MessageReader message, boolean defaultValue) {
         Objects.requireNonNull(message);
 
-        return message.tryGetLong(name(), defaultValue);
-    }
-
-    /**
-     * @param message
-     * @return
-     * 
-     * @see MessageReader#tryGetLong(String)
-     */
-    public OptionalLong tryGet(MessageReader message) {
-        Objects.requireNonNull(message);
-
-        return message.tryGetLong(name());
+        return message.tryGetBoolean(name(), defaultValue);
     }
 
     /**
      * @param message
      * @param value
      * 
-     * @see MessageWriter#putLong(String, long)
+     * @see MessageWriter#putByte(String, byte)
      */
-    public void put(MessageWriter message, long value) {
+    public void put(MessageWriter message, boolean value) {
         Objects.requireNonNull(message);
 
-        message.putLong(name(), value);
+        message.putBoolean(name(), value);
     }
 }

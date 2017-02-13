@@ -30,6 +30,13 @@ public interface MessageVisitor {
      * @param fieldType
      * @param value
      */
+    void visit(String fieldName, FieldType fieldType, boolean value);
+
+    /**
+     * @param fieldName
+     * @param fieldType
+     * @param value
+     */
     void visit(String fieldName, FieldType fieldType, byte value);
 
     /**

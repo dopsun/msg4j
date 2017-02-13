@@ -123,6 +123,9 @@ abstract class AbstractMessageReader implements MessageReader {
             Field field = entry.getValue();
 
             switch (field.type()) {
+            case BOOLEAN:
+                visitor.visit(entry.getKey(), field.type(), ((Field.BooleanField) field).value());
+                break;
             case BYTE:
                 visitor.visit(entry.getKey(), field.type(), ((Field.ByteField) field).value());
                 break;
@@ -187,6 +190,23 @@ abstract class AbstractMessageReader implements MessageReader {
         }
 
         return field.type();
+    }
+
+    @Override
+    public boolean getBoolean(String fieldName)
+            throws FieldNotFoundException, InvalidTypeException {
+        Objects.requireNonNull(fieldName);
+
+        Field field = fields.get(fieldName);
+        if (field == null) {
+            throw new FieldNotFoundException(fieldName);
+        }
+
+        if (field instanceof Field.BooleanField) {
+            return ((Field.BooleanField) field).value();
+        }
+
+        throw new InvalidTypeException(fieldName, FieldType.BOOLEAN, field.type());
     }
 
     @Override

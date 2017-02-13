@@ -50,6 +50,18 @@ final class WritableMessageImpl extends AbstractMessage implements WritableMessa
     }
 
     @Override
+    public void putBoolean(String fieldName, boolean value) throws InvalidTypeException {
+        Objects.requireNonNull(fieldName);
+
+        Field field = fields().get(fieldName);
+        if (field != null && !(field instanceof Field.ByteField)) {
+            throw new InvalidTypeException(fieldName, FieldType.BYTE, field.type());
+        }
+
+        fields().put(fieldName, new Field.BooleanField(value));
+    }
+
+    @Override
     public void putByte(String fieldName, byte value) throws InvalidTypeException {
         Objects.requireNonNull(fieldName);
 

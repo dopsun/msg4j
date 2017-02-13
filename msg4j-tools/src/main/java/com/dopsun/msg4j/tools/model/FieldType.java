@@ -24,6 +24,11 @@ import java.util.List;
  */
 public enum FieldType {
     /**
+     * @see Boolean
+     */
+    BOOLEAN,
+
+    /**
      * @see Byte
      */
     BYTE,

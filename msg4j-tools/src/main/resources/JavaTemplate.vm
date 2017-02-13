@@ -28,6 +28,7 @@ import com.dopsun.msg4j.core.messages.ImmutableMessage;
 import com.dopsun.msg4j.core.messages.MessageReader;
 import com.dopsun.msg4j.core.messages.WritableMessage;
 import com.dopsun.msg4j.core.messages.schema.DataDictionary;
+import com.dopsun.msg4j.core.messages.schema.BooleanFieldInfo;
 import com.dopsun.msg4j.core.messages.schema.ByteFieldInfo;
 import com.dopsun.msg4j.core.messages.schema.CharFieldInfo;
 import com.dopsun.msg4j.core.messages.schema.ShortFieldInfo;

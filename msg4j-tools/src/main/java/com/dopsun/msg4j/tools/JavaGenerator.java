@@ -119,7 +119,7 @@ public class JavaGenerator implements Generator {
             throw new RuntimeException("Unrecognized const value type: " + constInfo);
         }
     }
-    
+
     /**
      * @param constInfo
      * @return
@@ -146,6 +146,12 @@ public class JavaGenerator implements Generator {
      */
     public String getFieldValueTypeString(FieldInfo fieldInfo, boolean optional) {
         switch (fieldInfo.getType()) {
+        case BOOLEAN:
+            if (optional) {
+                throw new IllegalArgumentException();
+            }
+
+            return "boolean";
         case BYTE:
             if (optional) {
                 throw new IllegalArgumentException();

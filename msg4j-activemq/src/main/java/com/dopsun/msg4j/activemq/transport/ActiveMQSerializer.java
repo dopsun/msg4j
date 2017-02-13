@@ -76,6 +76,16 @@ final class ActiveMQSerializer {
         final javax.jms.MapMessage jmsMessage = session.createMapMessage();
         message.accept(new MessageVisitor() {
             @Override
+            public void visit(String fieldName, FieldType fieldType, boolean value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                try {
+                    jmsMessage.setBoolean(fieldKey.jmsKeyName, value);
+                } catch (JMSException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
             public void visit(String fieldName, FieldType fieldType, byte value) {
                 FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
                 try {
@@ -189,6 +199,12 @@ final class ActiveMQSerializer {
 
         message.accept(new MessageVisitor() {
             @Override
+            public void visit(String fieldName, FieldType fieldType, boolean value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                map.put(fieldKey.jmsKeyName, value);
+            }
+
+            @Override
             public void visit(String fieldName, FieldType fieldType, byte value) {
                 FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
                 map.put(fieldKey.jmsKeyName, value);
@@ -278,6 +294,9 @@ final class ActiveMQSerializer {
             FieldKey fieldKey = resolveFieldKeyFromJmsKey(jmsFieldName);
 
             switch (fieldKey.fieldType) {
+            case BOOLEAN:
+                message.putBoolean(fieldKey.fieldName, jmsMapMessage.getBoolean(jmsFieldName));
+                break;
             case BYTE:
                 message.putByte(fieldKey.fieldName, jmsMapMessage.getByte(jmsFieldName));
                 break;
@@ -334,6 +353,10 @@ final class ActiveMQSerializer {
             FieldKey fieldKey = resolveFieldKeyFromJmsKey(jmsFieldName);
 
             switch (fieldKey.fieldType) {
+            case BOOLEAN:
+                message.putBoolean(fieldKey.fieldName,
+                        ((Boolean) map.get(jmsFieldName)).booleanValue());
+                break;
             case BYTE:
                 message.putByte(fieldKey.fieldName, ((Byte) map.get(jmsFieldName)).byteValue());
                 break;
@@ -419,6 +442,9 @@ final class ActiveMQSerializer {
             this.fieldType = fieldType;
 
             switch (fieldType) {
+            case BOOLEAN:
+                this.jmsKeyName = fieldName + ".B";
+                break;
             case BYTE:
                 this.jmsKeyName = fieldName + ".b";
                 break;
@@ -465,6 +491,9 @@ final class ActiveMQSerializer {
 
             char typeKey = jmsKey.charAt(jmsKey.length() - 1);
             switch (typeKey) {
+            case 'B':
+                this.fieldType = FieldType.BOOLEAN;
+                break;
             case 'b':
                 this.fieldType = FieldType.BYTE;
                 break;

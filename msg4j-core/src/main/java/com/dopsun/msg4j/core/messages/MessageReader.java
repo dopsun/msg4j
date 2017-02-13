@@ -89,6 +89,41 @@ public interface MessageReader {
      * @throws InvalidTypeException
      *             if field exists but not expected type.
      */
+    boolean getBoolean(String fieldName) throws FieldNotFoundException, InvalidTypeException;
+
+    /**
+     * @param fieldName
+     *            field name
+     * @param defaultValue
+     *            value returned if field not exist
+     * @return value of field if exist, otherwise <code>defaultValue</code>.
+     * 
+     * @throws InvalidTypeException
+     *             if field exists but not expected type.
+     */
+    default boolean tryGetBoolean(String fieldName, boolean defaultValue)
+            throws InvalidTypeException {
+        Objects.requireNonNull(fieldName);
+
+        if (contains(fieldName)) {
+            return getBoolean(fieldName);
+        }
+
+        return defaultValue;
+    }
+
+    /**
+     * Gets value for field specified by <code>fieldName</code>.
+     * 
+     * @param fieldName
+     *            field name
+     * @return value for field
+     * 
+     * @throws FieldNotFoundException
+     *             if field not found
+     * @throws InvalidTypeException
+     *             if field exists but not expected type.
+     */
     byte getByte(String fieldName) throws FieldNotFoundException, InvalidTypeException;
 
     /**
