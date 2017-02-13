@@ -19,7 +19,9 @@ package com.dopsun.msg4j.activemq.transport;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -157,8 +159,8 @@ final class ActiveMQSerializer {
             public void visit(String fieldName, FieldType fieldType, ImmutableMessage value) {
                 FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
                 try {
-                    javax.jms.Message jmsMessageForMessage = toJms(session, value);
-                    jmsMessage.setObject(fieldKey.jmsKeyName, jmsMessageForMessage);
+                    Map<String, Object> mapMessage = messageToMap(value);
+                    jmsMessage.setObject(fieldKey.jmsKeyName, mapMessage);
                 } catch (JMSException e) {
                     throw new RuntimeException(e);
                 }
@@ -168,9 +170,9 @@ final class ActiveMQSerializer {
             public void visit(String fieldName, FieldType fieldType, List<ImmutableMessage> value) {
                 FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
                 try {
-                    List<javax.jms.Message> jmsMessageList = new ArrayList<>();
+                    List<Map<String, Object>> jmsMessageList = new ArrayList<>();
                     for (ImmutableMessage message : value) {
-                        jmsMessageList.add(toJms(session, message));
+                        jmsMessageList.add(messageToMap(message));
                     }
                     jmsMessage.setObject(fieldKey.jmsKeyName, jmsMessageList);
                 } catch (JMSException e) {
@@ -180,6 +182,79 @@ final class ActiveMQSerializer {
         });
 
         return jmsMessage;
+    }
+
+    private Map<String, Object> messageToMap(MessageReader message) {
+        final Map<String, Object> map = new HashMap<>();
+
+        message.accept(new MessageVisitor() {
+            @Override
+            public void visit(String fieldName, FieldType fieldType, byte value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                map.put(fieldKey.jmsKeyName, value);
+            }
+
+            @Override
+            public void visit(String fieldName, FieldType fieldType, char value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                map.put(fieldKey.jmsKeyName, value);
+            }
+
+            @Override
+            public void visit(String fieldName, FieldType fieldType, short value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                map.put(fieldKey.jmsKeyName, value);
+            }
+
+            @Override
+            public void visit(String fieldName, FieldType fieldType, int value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                map.put(fieldKey.jmsKeyName, value);
+            }
+
+            @Override
+            public void visit(String fieldName, FieldType fieldType, long value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                map.put(fieldKey.jmsKeyName, value);
+            }
+
+            @Override
+            public void visit(String fieldName, FieldType fieldType, float value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                map.put(fieldKey.jmsKeyName, value);
+            }
+
+            @Override
+            public void visit(String fieldName, FieldType fieldType, double value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                map.put(fieldKey.jmsKeyName, value);
+            }
+
+            @Override
+            public void visit(String fieldName, FieldType fieldType, String value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                map.put(fieldKey.jmsKeyName, value);
+            }
+
+            @Override
+            public void visit(String fieldName, FieldType fieldType, ImmutableMessage value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                Map<String, Object> mapMessage = messageToMap(value);
+                map.put(fieldKey.jmsKeyName, mapMessage);
+            }
+
+            @Override
+            public void visit(String fieldName, FieldType fieldType, List<ImmutableMessage> value) {
+                FieldKey fieldKey = resolveFieldKeyFromNameAndType(fieldName, fieldType);
+                List<Map<String, Object>> jmsMessageList = new ArrayList<>();
+                for (ImmutableMessage message : value) {
+                    jmsMessageList.add(messageToMap(message));
+                }
+                map.put(fieldKey.jmsKeyName, jmsMessageList);
+            }
+        });
+
+        return map;
     }
 
     /**
@@ -228,18 +303,19 @@ final class ActiveMQSerializer {
                 message.putString(fieldKey.fieldName, jmsMapMessage.getString(jmsFieldName));
                 break;
             case MESSAGE:
-                javax.jms.Message jmsMessageValue = (javax.jms.Message) jmsMapMessage
+                @SuppressWarnings("unchecked")
+                Map<String, Object> jmsMessageValue = (Map<String, Object>) jmsMapMessage
                         .getObject(jmsFieldName);
-                message.putMessage(fieldKey.fieldName, fromJms(jmsMessageValue).toImmutable());
+                message.putMessage(fieldKey.fieldName, mapToMesssage(jmsMessageValue));
                 break;
             case MESSAGE_LIST:
                 @SuppressWarnings("unchecked")
-                List<javax.jms.Message> jmsListValue = (List<javax.jms.Message>) jmsMapMessage
+                List<Map<String, Object>> jmsListValue = (List<Map<String, Object>>) jmsMapMessage
                         .getObject(jmsFieldName);
 
                 Builder<ImmutableMessage> listBuilder = ImmutableList.builder();
-                for (javax.jms.Message jmsListItem : jmsListValue) {
-                    listBuilder.add(fromJms(jmsListItem).toImmutable());
+                for (Map<String, Object> jmsListItem : jmsListValue) {
+                    listBuilder.add(mapToMesssage(jmsListItem));
                 }
 
                 message.putMessageList(fieldKey.fieldName, listBuilder.build());
@@ -248,6 +324,63 @@ final class ActiveMQSerializer {
         }
 
         return message;
+    }
+
+    private ImmutableMessage mapToMesssage(Map<String, Object> map) {
+        WritableMessage message = Messages.create();
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String jmsFieldName = entry.getKey();
+            FieldKey fieldKey = resolveFieldKeyFromJmsKey(jmsFieldName);
+
+            switch (fieldKey.fieldType) {
+            case BYTE:
+                message.putByte(fieldKey.fieldName, ((Byte) map.get(jmsFieldName)).byteValue());
+                break;
+            case CHAR:
+                message.putChar(fieldKey.fieldName,
+                        ((Character) map.get(jmsFieldName)).charValue());
+                break;
+            case SHORT:
+                message.putShort(fieldKey.fieldName, ((Short) map.get(jmsFieldName)).shortValue());
+                break;
+            case INT:
+                message.putInt(fieldKey.fieldName, ((Integer) map.get(jmsFieldName)).intValue());
+                break;
+            case LONG:
+                message.putLong(fieldKey.fieldName, ((Long) map.get(jmsFieldName)).longValue());
+                break;
+            case FLOAT:
+                message.putFloat(fieldKey.fieldName, ((Float) map.get(jmsFieldName)).floatValue());
+                break;
+            case DOUBLE:
+                message.putDouble(fieldKey.fieldName,
+                        ((Double) map.get(jmsFieldName)).doubleValue());
+                break;
+            case STRING:
+                message.putString(fieldKey.fieldName, (String) map.get(jmsFieldName));
+                break;
+            case MESSAGE:
+                @SuppressWarnings("unchecked")
+                Map<String, Object> jmsMessageValue = (Map<String, Object>) map.get(jmsFieldName);
+                message.putMessage(fieldKey.fieldName, mapToMesssage(jmsMessageValue));
+                break;
+            case MESSAGE_LIST:
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> jmsListValue = (List<Map<String, Object>>) map
+                        .get(jmsFieldName);
+
+                Builder<ImmutableMessage> listBuilder = ImmutableList.builder();
+                for (Map<String, Object> jmsListItem : jmsListValue) {
+                    listBuilder.add(mapToMesssage(jmsListItem));
+                }
+
+                message.putMessageList(fieldKey.fieldName, listBuilder.build());
+                break;
+            }
+        }
+
+        return message.toImmutable();
     }
 
     private FieldKey resolveFieldKeyFromJmsKey(String jmsKey) {
