@@ -46,6 +46,76 @@ abstract class AbstractMessageReader implements MessageReader {
     }
 
     @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        toString(sb);
+        return sb.toString();
+    }
+
+    private void toString(StringBuilder stringBuilder) {
+        stringBuilder.append("{");
+
+        boolean first = true;
+        for (Map.Entry<String, Field> entry : fields.entrySet()) {
+            if (first) {
+                first = false;
+            } else {
+                stringBuilder.append(", ");
+            }
+
+            String name = entry.getKey();
+            Field field = entry.getValue();
+
+            stringBuilder.append(name);
+            stringBuilder.append(".");
+            stringBuilder.append(field.type().name());
+            stringBuilder.append("=");
+
+            switch (entry.getValue().type()) {
+            case BYTE:
+                stringBuilder.append(((Field.ByteField) field).value());
+                break;
+            case CHAR:
+                stringBuilder.append(((Field.CharField) field).value());
+                break;
+            case SHORT:
+                stringBuilder.append(((Field.ShortField) field).value());
+                break;
+            case INT:
+                stringBuilder.append(((Field.IntField) field).value());
+                break;
+            case LONG:
+                stringBuilder.append(((Field.LongField) field).value());
+                break;
+            case FLOAT:
+                stringBuilder.append(((Field.FloatField) field).value());
+                break;
+            case DOUBLE:
+                stringBuilder.append(((Field.DoubleField) field).value());
+                break;
+            case STRING:
+                stringBuilder.append(((Field.StringField) field).value());
+                break;
+            case MESSAGE:
+                ImmutableMessage msg = ((Field.MessageField) field).value();
+                if (msg instanceof AbstractMessageReader) {
+                    ((AbstractMessageReader) msg).toString(stringBuilder);
+                } else {
+                    stringBuilder.append(((Field.MessageField) field).value());
+                }
+                break;
+            case MESSAGE_LIST:
+                stringBuilder.append(((Field.MessageListField) field).value());
+                break;
+            default:
+                break;
+            }
+        }
+
+        stringBuilder.append("}");
+    }
+
+    @Override
     public void accept(MessageVisitor visitor) {
         Objects.requireNonNull(visitor);
 
