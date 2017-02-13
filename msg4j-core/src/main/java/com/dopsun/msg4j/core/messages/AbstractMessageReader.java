@@ -72,6 +72,9 @@ abstract class AbstractMessageReader implements MessageReader {
             stringBuilder.append("=");
 
             switch (entry.getValue().type()) {
+            case BOOLEAN:
+                stringBuilder.append(((Field.BooleanField) field).value());
+                break;
             case BYTE:
                 stringBuilder.append(((Field.ByteField) field).value());
                 break;
