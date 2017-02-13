@@ -118,6 +118,41 @@ public interface Transport extends AutoCloseable {
     /**
      * Subscribes message from the transport. Messages will be delivered to <code>consumer</code>.
      * 
+     * <p>
+     * <b>Important notes:</b>
+     * </p>
+     * <p>
+     * Once returned, the subscription have been registered to underlying transport service, as well
+     * as to its data producers, e.g. server. This behavior should be enforced, as high level
+     * communications can assume following sequence of events:
+     * <ul>
+     * <li>Client subscribes to destination.</li>
+     * <li>Client sends data subscription to server, via another destination listened by server.
+     * </li>
+     * <li>Server can immediately publish data to the destination client subscribe to.</li>
+     * </ul>
+     * 
+     * For example, Multi-nodes Routing in Solace, the subscription may take time to propagate to
+     * all appliances in the network. So:
+     * <ul>
+     * <li>Transport for producer listens to a special destination.</li>
+     * <li>Transport for consumer subscribes to data destination.</li>
+     * <li>Transport for consumer sends subscription information to destination producer
+     * listens.</li>
+     * <li>Transport for producer receives subscription information, and publish special
+     * confirmation message to data destination. Depends on implementation, this can be sent several
+     * times with configurable intervals.</li>
+     * <li>Transport for consumer receives confirmation messages and confirms that subscription has
+     * reached to server. It will ignore subsequent confirmation messages.</li>
+     * <li>If transport for consumer does not receives confirmation messages in time,
+     * {@link #subscribe(TransportDestination, TransportSubscriberSettings, Consumer)} will be
+     * failed.</li>
+     * <li>There may be transports for other consumers. And they should ignore this confirmation
+     * messages, as it's not for them.</li>
+     * </ul>
+     * 
+     * </p>
+     * 
      * @param destination
      *            destination to subscribe
      * @param settings
