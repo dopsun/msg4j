@@ -13,7 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.dopsun.msg4j</groupId>
-			<artifactId>msg4j-core</artifactId>
+			<artifactId>msg4j-o2m</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

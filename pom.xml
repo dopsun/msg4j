@@ -31,6 +31,7 @@
 		<module>msg4j-activemq</module>
 		<module>msg4j-tools</module>
 		<module>msg4j-inmem</module>
+		<module>msg4j-o2m</module>
 	</modules>
 
 	<dependencies>

@@ -1,0 +1,217 @@
+options:
+  messageTypeField: "MessageType"
+  javaClassName: "com.dopsun.msg4j.o2m.impl.O2mMessages"
+  
+consts:
+# Error Codes
+# - E_OK reprsents no errors.
+- {name: "E_OK",                                      type: "INT",      value: "0"}
+- {name: "E_SERVER_UNEXPECTED_SERVER",                type: "INT",      value: "1"}
+- {name: "E_SERVER_REQUEST_HANDLER_EXCEPTION",        type: "INT",      value: "2"}
+- {name: "E_CLIENT_SESSION_REPLACED",                 type: "INT",      value: "3"}
+
+- {name: "TRUE",                                      type: "STRING",   value: "T"}
+- {name: "FALSE",                                     type: "STRING",   value: "F"}
+
+fields:
+# For all messages
+- {id: "0",     type: "STRING",     name: "MessageType"}
+- {id: "1",     type: "LONG",       name: "SeqNum"}
+- {id: "2",     type: "LONG",       name: "Timestamp"}
+
+# Common fields b/w client and servers in different message types.
+- {id: "3",     type: "STRING",     name: "ClientSessionId"}
+- {id: "4",     type: "STRING",     name: "ServerSessionId"}
+- {id: "5",     type: "LONG",       name: "RequestSeqNum"}
+- {id: "6",     type: "MESSAGE",    name: "Payload"}
+
+# For reporting errors via replies
+- {id: "10",     type: "INT",        name: "ErrorCode"}
+- {id: "11",     type: "STRING",     name: "ErrorText"}
+
+# Identification fields
+- {id: "12",    type: "STRING",     name: "ServerId"}
+- {id: "13",    type: "STRING",     name: "ClientId"}
+- {id: "14",    type: "STRING",     name: "Version"}
+
+# For pub/ subs communications
+- {id: "16",    type: "STRING",     name: "SubscriptionId"}
+- {id: "17",    type: "MESSAGE",    name: "Selector"}
+- {id: "18",    type: "STRING",     name: "ChannelCode"}
+- {id: "19",    type: "STRING",     name: "SubscribeMode"}
+
+- {id: "20",    type: "BOOLEAN",    name: "SnapshotExists"}
+- {id: "21",    type: "LONG",       name: "NextChannelSeqNum"}
+
+- {id: "22",    type: "BOOLEAN",    name: "SnapshotIsLast"}
+
+# Server settings
+- {id: "23",    type: "INT",        name: "ServerHeartbeatInterval"}
+
+messages:
+# Abstract messages
+- name: "AbstractMessage"
+  isAbstract: true
+  fields:
+  - {name: "MessageType"}
+  - {name: "SeqNum"}
+  - {name: "Timestamp"}
+
+- name: "AbstractServerPublishMessage"
+  isAbstract: true
+  fields:
+  - {name: "ServerSessionId"}
+  includeMessages:
+  - {name: "AbstractMessage"}
+
+- name: "RequestMessageBeforeConnected"
+  isAbstract: true
+  fields:
+  - {name: "ClientSessionId"}
+  includeMessages:
+  - {name: "AbstractMessage"}
+
+- name: "RequestMessage"
+  isAbstract: true
+  fields:
+  - {name: "ServerSessionId"}
+  includeMessages:
+  - {name: "RequestMessageBeforeConnected"}
+
+- name: "ReplyMessage"
+  isAbstract: true
+  fields:
+  - {name: "RequestSeqNum"}
+  - {name: "ClientSessionId"}
+  - {name: "ServerSessionId"}
+  
+  - {name: "ErrorCode", optional: true}
+  - {name: "ErrorText", optional: true}
+  includeMessages:
+  - {name: "AbstractMessage"}
+
+# Server started and stopped notification
+- id: "1"
+  name: "ServerStartedNotification"
+  fields:
+  - {name: "ServerId"}
+  - {name: "Version"}
+  includeMessages:
+  - {name: "AbstractServerPublishMessage"}
+  
+- id: "2"
+  name: "ServerStoppedNotification"
+  fields:
+  - {name: "ServerId"}
+  includeMessages:
+  - {name: "AbstractServerPublishMessage"}
+
+# Client connect request/ reply
+- id: "3"
+  name: "ClientConnectRequest"
+  fields:
+  - {name: "ServerId"}
+  - {name: "ClientId"}
+  - {name: "Version"}
+  includeMessages:
+  - {name: "RequestMessageBeforeConnected"}
+  
+- id: "4"
+  name: "ClientConnectReply"
+  fields:
+  - {name: "Version"}
+  - {name: "ServerHeartbeatInterval"}
+  includeMessages:
+  - {name: "ReplyMessage"}
+
+# Client disconnect request/ reply
+- id: "5"
+  name: "ClientDisconnectRequest"
+  includeMessages:
+  - {name: "RequestMessage"}
+  
+- id: "6"
+  name: "ClientDisconnectReply"
+  includeMessages:
+  - {name: "ReplyMessage"}
+
+# Subscribe request and reply
+- id: "7"
+  name: "SubscribeRequest"
+  fields:
+  - {name: "ChannelCode"}
+  - {name: "SubscriptionId"}
+  - {name: "SubscribeMode"}
+  - {name: "Selector", optional: true}
+  includeMessages:
+  - {name: "RequestMessage"}
+  
+- id: "8"
+  name: "SubscribeReply"
+  fields:
+  - {name: "SubscriptionId"}
+  - {name: "NextChannelSeqNum"}
+  - {name: "SnapshotExists", optional: true}
+  includeMessages:
+  - {name: "ReplyMessage"}
+
+# Subscribe request and reply
+- id: "9"
+  name: "UnsubscribeRequest"
+  fields:
+  - {name: "ChannelCode"}
+  - {name: "SubscriptionId"}
+  includeMessages:
+  - {name: "RequestMessage"}
+  
+- id: "10"
+  name: "UnsubscribeReply"
+  fields:
+  - {name: "SubscriptionId"}
+  includeMessages:
+  - {name: "ReplyMessage"}
+
+# Channel snapshot and update message
+- id: "11"
+  name: "ChannelSnapshot"
+  fields:
+  - {name: "Payload"}
+  - {name: "SubscriptionId"}
+  - {name: "SnapshotIsLast", optional: true}
+  - {name: "ClientSessionId"}
+  includeMessages:
+  - {name: "AbstractServerPublishMessage"}
+  
+- id: "12"
+  name: "ChannelUpdate"
+  fields:
+  - {name: "Payload"}
+  includeMessages:
+  - {name: "AbstractServerPublishMessage"}
+  
+# Server to client heartbeat
+- id: "13"
+  name: "ServerClientHeartbeat"
+  includeMessages:
+  - {name: "AbstractServerPublishMessage"}
+
+# Server to client heartbeat
+- id: "14"
+  name: "ClientSessionReplacedReply"
+  includeMessages:
+  - {name: "AbstractServerPublishMessage"}
+
+# User request and reply
+- id: "60"
+  name: "UserRequest"
+  fields:
+  - {name: "Payload"}
+  includeMessages:
+  - {name: "RequestMessage"}
+  
+- id: "61"
+  name: "UserReply"
+  fields:
+  - {name: "Payload"}
+  includeMessages:
+  - {name: "ReplyMessage"}
