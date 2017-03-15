@@ -1,5 +1,5 @@
 # msg4j: Message for Java
-![build:passing](https://travis-ci.org/dopsun/msg4j.svg?branch=master)
+[![Build Status](https://travis-ci.org/dopsun/msg4j.svg?branch=master)](https://travis-ci.org/dopsun/msg4j)
 
 Define, codec, store and deliver, and more ...
 
