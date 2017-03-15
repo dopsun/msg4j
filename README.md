@@ -1,4 +1,6 @@
 # msg4j: Message for Java
+![build:passing](https://travis-ci.org/dopsun/msg4j.svg?branch=master)
+
 Define, codec, store and deliver, and more ...
 
 ## Goals
